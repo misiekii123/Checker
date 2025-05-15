@@ -2,7 +2,8 @@
 
 enum class GameState{
     InGame,
-    InMenu
+    InMenu,
+    InPause
 };
 
 class Game{
