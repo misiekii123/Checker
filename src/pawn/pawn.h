@@ -1,5 +1,9 @@
-class pawn{
+#include <raylib.h>
+
+class Pawn{
     private:
-        int x;
-        int y;
+        Vector2 position;
+    public:
+        Vector2 getPosition();
+        void changePosition(Vector2 position);
 };
