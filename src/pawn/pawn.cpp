@@ -1,4 +1,4 @@
-#include <pawn.h>
+#include "pawn.h"
 
 Vector2 Pawn::getPosition() {
     return position;
