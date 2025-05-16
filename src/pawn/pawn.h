@@ -1,6 +1,6 @@
 #include <raylib.h>
 
-enum class Color {
+enum class PawnColor {
     White,
     Black
 };
@@ -8,7 +8,7 @@ enum class Color {
 class Pawn {
 private:
     Vector2 position;
-    Color pawnColor;
+    PawnColor pawnColor;
     bool IsAlive;
 public:
     Vector2 getPosition();
