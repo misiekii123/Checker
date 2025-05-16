@@ -1,12 +1,12 @@
 #include <raylib.h>
 
-enum class GameState{
+enum class GameState {
     InGame,
     InMenu,
     InPause
 };
 
-class Game{
+class Game {
 private:
     GameState currentState;
 public:

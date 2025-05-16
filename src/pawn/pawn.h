@@ -1,6 +1,6 @@
 #include <raylib.h>
 
-class Pawn{
+class Pawn {
 private:
     Vector2 position;
 public:
