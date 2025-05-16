@@ -11,4 +11,5 @@ private:
     GameState currentState;
 public:
     void changeGameState(GameState newState);
+    Game();
 };
