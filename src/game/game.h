@@ -7,7 +7,8 @@ enum class GameState{
 };
 
 class Game{
-    public:
-        void changeGameState();
-
+private:
+    GameState currentState;
+public:
+    void changeGameState(GameState newState);
 };
