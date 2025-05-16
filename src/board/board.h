@@ -11,6 +11,7 @@ public:
     Pawn white_pawns[16];
     void drawBoard();
     void fillPawns();
+    void drawPawns();
     Board(Vector2 size);
     Board() = default;
 };

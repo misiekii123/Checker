@@ -11,12 +11,14 @@ void Game::changeGameState(GameState newState) {
 
 void Game::startGame() {
     changeGameState(GameState::InGame);
+    board.fillPawns();
 }
 
 void Game::mainLoop() {
     switch (currentState) {
         case GameState::InGame:
             board.drawBoard();
+            board.drawPawns();
             break;
         case GameState::InMenu:
             ui.drawMenu();
