@@ -15,7 +15,6 @@ int main() {
     while (!WindowShouldClose()) {
 
         BeginDrawing();
-        board.drawBoard();
         ClearBackground(BLACK);
         game.mainLoop();
         EndDrawing();
