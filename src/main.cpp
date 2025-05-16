@@ -6,7 +6,7 @@
 int main() {
     // Initialize the window
     const int screenWidth = 800;
-    const int screenHeight = 600;
+    const int screenHeight = 800;
     InitWindow(screenWidth, screenHeight, "Checker");
 
     Board board(Vector2{8, 8});
@@ -17,6 +17,7 @@ int main() {
 
         BeginDrawing();
         ClearBackground(BLACK);
+        board.drawBoard();
         EndDrawing();
     }
 
