@@ -12,6 +12,13 @@ void Board::drawBoard() {
     }
 }
 
+void Board::fillPawns() {
+    for (int i = 0; i < 16; i++) {
+        black_pawns[i].changePosition(Vector2{(float)(i % 8) * 100 + 50, (float)(i / 8) * 100 + 50});
+        white_pawns[i].changePosition(Vector2{(float)(i % 8) * 100 + 50, (float)(i / 8) * 100 + 50});
+    }
+}
+
 Board::Board(Vector2 size) {
     this->size = size;
 }
