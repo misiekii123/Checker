@@ -7,6 +7,7 @@ file(GLOB_RECURSE SOURCES
     src/board/*.cpp
     src/game/*.cpp
     src/pawn/*.cpp
+    src/ui/*.cpp
     src/main.cpp
 )
 
