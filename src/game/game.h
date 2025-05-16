@@ -11,5 +11,7 @@ private:
     GameState currentState;
 public:
     void changeGameState(GameState newState);
+    void startGame();
+    void mainLoop();
     Game();
 };

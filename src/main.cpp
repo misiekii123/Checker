@@ -1,23 +1,22 @@
 #include "raygui.h"
 #include "raylib.h"
 #include <iostream>
-#include "board/board.h"
+#include "game/game.h"
 
 int main() {
-    // Initialize the window
     const int screenWidth = 800;
     const int screenHeight = 800;
     InitWindow(screenWidth, screenHeight, "Checker");
 
-    Board board(Vector2{8, 8});
-
+    Game game;
+    
     SetTargetFPS(60);
 
     while (!WindowShouldClose()) {
 
         BeginDrawing();
         ClearBackground(BLACK);
-        board.drawBoard();
+        game.mainLoop();
         EndDrawing();
     }
 
