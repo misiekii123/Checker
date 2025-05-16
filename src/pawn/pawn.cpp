@@ -7,3 +7,7 @@ Vector2 Pawn::getPosition() {
 void Pawn::changePosition(Vector2 position) {
     this->position = position;
 }
+
+Pawn::Pawn() {
+    this->is_alive = true;
+}

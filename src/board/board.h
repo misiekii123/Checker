@@ -7,8 +7,8 @@ class Board {
 private:
     Vector2 size;
 public:
-    Pawn black_pawns[16];
-    Pawn white_pawns[16];
+    Pawn black_pawns[12];
+    Pawn white_pawns[12];
     void drawBoard();
     void fillPawns();
     void drawPawns();
