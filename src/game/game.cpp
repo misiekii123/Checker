@@ -15,10 +15,13 @@ void Game::startGame() {
 void Game::mainLoop() {
     switch (currentState) {
         case GameState::InGame:
-            //TODO: Implement game logic
+            board.drawBoard();
             break;
         case GameState::InMenu:
-            //TODO: Draw UI for the menu
+            ui.drawMenu();
+            if (IsKeyPressed(KEY_ENTER)) {
+                startGame();
+            }
             break;
         case GameState::InPause:
             // TODO: Draw UI for the pause menu

@@ -1,3 +1,5 @@
+#pragma once
+
 #include <raylib.h>
 
 class Board {
@@ -6,4 +8,5 @@ private:
 public:
     void drawBoard();
     Board(Vector2 size);
+    Board() = default;
 };
