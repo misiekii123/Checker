@@ -1,10 +1,12 @@
+#pragma once
+
 #include <raylib.h>
 
-class Board{
-    private:
-        Vector2 size;
-    public:
-        void drawBoard();
-        Board(Vector2 size);
-
+class Board {
+private:
+    Vector2 size;
+public:
+    void drawBoard();
+    Board(Vector2 size);
+    Board() = default;
 };

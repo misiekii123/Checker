@@ -7,6 +7,7 @@ file(GLOB_RECURSE SOURCES
     src/board/*.cpp
     src/game/*.cpp
     src/pawn/*.cpp
+    src/ui/*.cpp
     src/main.cpp
 )
 
@@ -35,6 +36,7 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(raygui)
 
 target_include_directories(${PROJECT_NAME} PRIVATE ${raygui_SOURCE_DIR}/src)
+target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/src)
 
 if (WIN32)
     target_link_libraries(${PROJECT_NAME} winmm gdi32 opengl32)
