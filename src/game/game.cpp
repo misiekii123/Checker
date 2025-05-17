@@ -42,7 +42,7 @@ void Game::mainLoop() {
     }
 }
 
-int Game::isBeatingAvailable(Pawn* pawn) {
+bool Game::isBeatingAvailable(Pawn* pawn) {
     if (!pawn || !pawn->is_alive) return 0;
 
     int directions[4][2] = { {-1, -1}, {1, -1}, {-1, 1}, {1, 1} };
@@ -65,12 +65,12 @@ int Game::isBeatingAvailable(Pawn* pawn) {
             Pawn* end = board.board[endY][endX];
 
             if (mid && !colorsEqual(mid->pawn_color, pawn->pawn_color) && end == nullptr) {
-                return 1;
+                return true;
             }
         }
     }
 
-    return 0;
+    return false;
 }
 
 // bool Game::isMoveLegal(Pawn pawn, Vector2 new_position, std::vector <std::vector<bool>> fields()) {
