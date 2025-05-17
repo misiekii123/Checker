@@ -42,23 +42,36 @@ void Game::mainLoop() {
     }
 }
 
-// int Game::isBeatingAvailable(Pawn pawn, std::vector <std::vector<bool>> fields()) {
-//     int beatings[4];
-//     Vector2 virtual_position = pawn.getPosition();
-//     for(int i = 0; i < fields.size(); i++) { // fields.size() is obliged to be changed for the size constant
-//         beatings[i] = 0;
-//         if(pawn.is_queen) {
+int Game::isBeatingAvailable(Pawn* pawn) {
+    if (!pawn || !pawn->is_alive) return 0;
+
+    int directions[4][2] = { {-1, -1}, {1, -1}, {-1, 1}, {1, 1} };
+    Vector2 pos = pawn->getPosition();
+    int gridX = pos.x / 100;
+    int gridY = pos.y / 100;
+
+    for (int d = 0; d < 4; ++d) {
+        int dx = directions[d][0];
+        int dy = directions[d][1];
+        int midX = gridX + dx;
+        int midY = gridY + dy;
+        int endX = gridX + 2 * dx;
+        int endY = gridY + 2 * dy;
+
+        if (midX >= 0 && midX < 8 && midY >= 0 && midY < 8 &&
+            endX >= 0 && endX < 8 && endY >= 0 && endY < 8) {
             
-//         }
-//         else {
-//             if(fields[virtual_position.x - 1][virtual_position.y + 1] && !fields[virtual_position.x - 2][virtual_position.y + 2] /*this should include some kind of check of color of the pawn*/) {
+            Pawn* mid = board.board[midY][midX];
+            Pawn* end = board.board[endY][endX];
 
-//             }
-//         }
-//     }
+            if (mid && !colorsEqual(mid->pawn_color, pawn->pawn_color) && end == nullptr) {
+                return 1;
+            }
+        }
+    }
 
-//     return max(beatings);
-// }
+    return 0;
+}
 
 // bool Game::isMoveLegal(Pawn pawn, Vector2 new_position, std::vector <std::vector<bool>> fields()) {
 //     if(pawn.is_alive){
@@ -75,3 +88,7 @@ void Game::mainLoop() {
 //         }
 //     }
 // }
+
+bool Game::colorsEqual(Color c1, Color c2) {
+    return c1.r == c2.r && c1.g == c2.g && c1.b == c2.b && c1.a == c2.a;
+}

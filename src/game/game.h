@@ -18,11 +18,12 @@ private:
     GameState currentState;
     Ui ui;
     Board board;
+    bool colorsEqual(Color c1, Color c2);
 public:
     void changeGameState(GameState newState);
     void startGame();
     void mainLoop();
     Game();
-    // bool isMoveLegal(Pawn pawn, Vector2 new_position, std::vector <std::vector<bool>> fields());
-    // int isBeatingAvailable(Pawn pawn, std::vector <std::vector<bool>> fields());
+    bool isMoveLegal(Pawn pawn, Vector2 new_position, std::vector <std::vector<bool>> fields());
+    int isBeatingAvailable(Pawn* pawn);
 };
