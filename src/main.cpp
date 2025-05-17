@@ -6,6 +6,7 @@
 int main() {
     const int screenWidth = 800;
     const int screenHeight = 800;
+    SetConfigFlags(FLAG_VSYNC_HINT | FLAG_WINDOW_HIGHDPI);
     InitWindow(screenWidth, screenHeight, "Checker");
 
     Game game;
