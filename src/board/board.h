@@ -2,6 +2,8 @@
 
 #include <raylib.h>
 #include "pawn/pawn.h"
+#include <vector>
+#include <map>
 
 class Board {
 private:
@@ -14,4 +16,5 @@ public:
     void drawPawns();
     Board(Vector2 size);
     Board() = default;
+    std::vector <std::vector<bool>> fields(); // type of this table should be changed
 };
