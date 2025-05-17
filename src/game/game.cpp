@@ -42,36 +42,36 @@ void Game::mainLoop() {
     }
 }
 
-int Game::isBeatingAvailable(Pawn pawn, std::vector <std::vector<bool>> fields()) {
-    int beatings[4];
-    Vector2 virtual_position = pawn.getPosition();
-    for(int i = 0; i < fields.size(); i++) { // fields.size() is obliged to be changed for the size constant
-        beatings[i] = 0;
-        if(pawn.is_queen) {
+// int Game::isBeatingAvailable(Pawn pawn, std::vector <std::vector<bool>> fields()) {
+//     int beatings[4];
+//     Vector2 virtual_position = pawn.getPosition();
+//     for(int i = 0; i < fields.size(); i++) { // fields.size() is obliged to be changed for the size constant
+//         beatings[i] = 0;
+//         if(pawn.is_queen) {
             
-        }
-        else {
-            if(fields[virtual_position.x - 1][virtual_position.y + 1] && !fields[virtual_position.x - 2][virtual_position.y + 2] /*this should include some kind of check of color of the pawn*/) {
+//         }
+//         else {
+//             if(fields[virtual_position.x - 1][virtual_position.y + 1] && !fields[virtual_position.x - 2][virtual_position.y + 2] /*this should include some kind of check of color of the pawn*/) {
 
-            }
-        }
-    }
+//             }
+//         }
+//     }
 
-    return max(beatings);
-}
+//     return max(beatings);
+// }
 
-bool Game::isMoveLegal(Pawn pawn, Vector2 new_position, std::vector <std::vector<bool>> fields()) {
-    if(pawn.is_alive){
-        if(!fields[new_position.x][new_position.y]) {
-            if(pawn.is_queen) {
-                if(abs((new_position.y - pawn.getPosition().y)/(new_position.x - pawn.getPosition().x)) == 1) //TODO: ADD checking for pawns on the way
-                    return 1;
-                else
-                    return 0;
-            }
-            else {
+// bool Game::isMoveLegal(Pawn pawn, Vector2 new_position, std::vector <std::vector<bool>> fields()) {
+//     if(pawn.is_alive){
+//         if(!fields[new_position.x][new_position.y]) {
+//             if(pawn.is_queen) {
+//                 if(abs((new_position.y - pawn.getPosition().y)/(new_position.x - pawn.getPosition().x)) == 1) //TODO: ADD checking for pawns on the way
+//                     return 1;
+//                 else
+//                     return 0;
+//             }
+//             else {
                 
-            }
-        }
-    }
-}
+//             }
+//         }
+//     }
+// }

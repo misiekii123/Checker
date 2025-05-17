@@ -5,6 +5,7 @@
 #include "ui/ui.h"
 #include <pawn/pawn.h>
 #include <board/board.h>
+#include <vector>
 
 enum class GameState {
     InGame,
@@ -22,6 +23,6 @@ public:
     void startGame();
     void mainLoop();
     Game();
-    bool isMoveLegal(Pawn pawn, Vector2 new_position, std::vector <std::vector<bool>> fields());
-    int isBeatingAvailable(Pawn pawn, std::vector <std::vector<bool>> fields());
+    // bool isMoveLegal(Pawn pawn, Vector2 new_position, std::vector <std::vector<bool>> fields());
+    // int isBeatingAvailable(Pawn pawn, std::vector <std::vector<bool>> fields());
 };
