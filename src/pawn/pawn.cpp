@@ -8,6 +8,9 @@ void Pawn::changePosition(Vector2 position) {
     this->position = position;
 }
 
-Pawn::Pawn() {
+Pawn::Pawn(Color color, Vector2 position) {
+    this->position = position;
     this->is_alive = true;
+    this->is_queen = false;
+    this->pawn_color = color;
 }
