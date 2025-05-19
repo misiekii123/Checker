@@ -87,29 +87,72 @@ std::vector<Vector2> Game::isBeatingAvailable(Pawn* pawn) {
     std::vector<Vector2> result;
     if (!pawn || !pawn->is_alive) return result;
 
-    int directions[4][2] = { {-1, -1}, {1, -1}, {-1, 1}, {1, 1} };
-    Vector2 pos = pawn->getPosition();
-    int gridX = static_cast<int>(pos.x) / 100;
-    int gridY = static_cast<int>(pos.y) / 100;
+    if(!pawn->is_queen) {
+        int directions[4][2] = { {-1, -1}, {1, -1}, {-1, 1}, {1, 1} };
+        Vector2 pos = pawn->getPosition();
+        int gridX = static_cast<int>(pos.x) / 100;
+        int gridY = static_cast<int>(pos.y) / 100;
 
-    for (int d = 0; d < 4; ++d) {
-        int dx = directions[d][0];
-        int dy = directions[d][1];
-        int midX = gridX + dx;
-        int midY = gridY + dy;
-        int endX = gridX + 2 * dx;
-        int endY = gridY + 2 * dy;
+        for (int d = 0; d < 4; ++d) {
+            int dx = directions[d][0];
+            int dy = directions[d][1];
+            int midX = gridX + dx;
+            int midY = gridY + dy;
+            int endX = gridX + 2 * dx;
+            int endY = gridY + 2 * dy;
 
-        if (midX >= 0 && midX < 8 && midY >= 0 && midY < 8 &&
-            endX >= 0 && endX < 8 && endY >= 0 && endY < 8) {
+            if (midX >= 0 && midX < 8 && midY >= 0 && midY < 8 &&
+                endX >= 0 && endX < 8 && endY >= 0 && endY < 8) {
 
-            Pawn* mid = board.board[midY][midX];
-            Pawn* end = board.board[endY][endX];
+                Pawn* mid = board.board[midY][midX];
+                Pawn* end = board.board[endY][endX];
 
-            if (mid && !colorsEqual(mid->pawn_color, pawn->pawn_color) && end == nullptr) {
-                result.push_back(Vector2{ static_cast<float>(endX * 100 + 50), static_cast<float>(endY * 100 + 50) });
+                if (mid && !colorsEqual(mid->pawn_color, pawn->pawn_color) && end == nullptr) {
+                    result.push_back(Vector2{ static_cast<float>(endX * 100 + 50), static_cast<float>(endY * 100 + 50) });
+                }
             }
         }
+    }
+    else {
+        int directions[4][2] = { {-1, -1}, {1, -1}, {-1, 1}, {1, 1} };
+        Vector2 pos = pawn->getPosition();
+        int gridX = static_cast<int>(pos.x) / 100;
+        int gridY = static_cast<int>(pos.y) / 100;
+
+        for (int d = 0; d < 4; ++d) {
+            int dx = directions[d][0];
+            int dy = directions[d][1];
+            
+            int x = gridX + dx;
+            int y = gridY + dy;
+            bool enemyFound = false;
+            Pawn* captured = nullptr;
+
+            while (x >= 0 && x < 8 && y >= 0 && y < 8) {
+                Pawn* current = board.board[y][x];
+
+                if (current == nullptr) {
+                    if (enemyFound) {
+                        result.push_back(Vector2{ static_cast<float>(x * 100 + 50), static_cast<float>(y * 100 + 50) });
+                    }
+                } else {
+                    if (!enemyFound) {
+                        if (!colorsEqual(current->pawn_color, pawn->pawn_color)) {
+                            enemyFound = true;
+                            captured = current;
+                        } else {
+                            break;
+                        }
+                    } else {
+                        break;
+                    }
+                }
+
+                x += dx;
+                y += dy;
+            }
+        }
+
     }
 
     return result;
