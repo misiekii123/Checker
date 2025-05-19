@@ -29,6 +29,9 @@ void Game::mainLoop() {
         case GameState::InGame:
             board.drawBoard();
             board.drawPawns();
+            if (IsKeyPressed(KEY_ESCAPE)) {
+                changeGameState(GameState::InPause);
+            }
             break;
         case GameState::InMenu:
             ui.drawMenu();
@@ -37,7 +40,10 @@ void Game::mainLoop() {
             }
             break;
         case GameState::InPause:
-            // TODO: Draw UI for the pause menu
+            ui.drawPauseMenu();
+            if (IsKeyPressed(KEY_ENTER)) {
+                startGame();
+            }
             break;
     }
 }
