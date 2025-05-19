@@ -2,15 +2,6 @@
 #include <math.h>
 #include <iostream>
 
-int max(int table[4]) {
-    int max = 0;
-    for(int i = 0; i < 4; i++) {
-        if(table[i] > max)
-            max = table[i];
-    }
-    return max;
-}
-
 Game::Game() {
     currentState = GameState::InMenu;
     this->board = Board(Vector2{8, 8});
