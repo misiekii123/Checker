@@ -18,6 +18,7 @@ private:
     GameState currentState;
     Ui ui;
     Board board;
+    bool isPawnSelected(Pawn* pawn);
     bool colorsEqual(Color c1, Color c2);
 public:
     void changeGameState(GameState newState);

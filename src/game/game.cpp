@@ -1,5 +1,6 @@
 #include "game.h"
 #include <math.h>
+#include <iostream>
 
 int max(int table[4]) {
     int max = 0;
@@ -46,6 +47,17 @@ void Game::mainLoop() {
             }
             break;
     }
+}
+
+bool Game::isPawnSelected(Pawn* pawn) {
+    if (pawn) {
+        Vector2 pos = pawn->getPosition();
+        int gridX = static_cast<int>(pos.x) / 100;
+        int gridY = static_cast<int>(pos.y) / 100;
+        std::cout << "gridX: " << gridX << " gridY: " << gridY << std::endl;
+        return board.board[gridY][gridX] == pawn;
+    }
+    return false;
 }
 
 std::vector<Vector2> Game::isBeatingAvailable(Pawn* pawn) {
