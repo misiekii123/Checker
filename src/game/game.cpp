@@ -42,13 +42,14 @@ void Game::mainLoop() {
     }
 }
 
-bool Game::isBeatingAvailable(Pawn* pawn) {
-    if (!pawn || !pawn->is_alive) return 0;
+std::vector<Vector2> Game::isBeatingAvailable(Pawn* pawn) {
+    std::vector<Vector2> result;
+    if (!pawn || !pawn->is_alive) return result;
 
     int directions[4][2] = { {-1, -1}, {1, -1}, {-1, 1}, {1, 1} };
     Vector2 pos = pawn->getPosition();
-    int gridX = pos.x / 100;
-    int gridY = pos.y / 100;
+    int gridX = static_cast<int>(pos.x) / 100;
+    int gridY = static_cast<int>(pos.y) / 100;
 
     for (int d = 0; d < 4; ++d) {
         int dx = directions[d][0];
@@ -60,18 +61,19 @@ bool Game::isBeatingAvailable(Pawn* pawn) {
 
         if (midX >= 0 && midX < 8 && midY >= 0 && midY < 8 &&
             endX >= 0 && endX < 8 && endY >= 0 && endY < 8) {
-            
+
             Pawn* mid = board.board[midY][midX];
             Pawn* end = board.board[endY][endX];
 
             if (mid && !colorsEqual(mid->pawn_color, pawn->pawn_color) && end == nullptr) {
-                return true;
+                result.push_back(Vector2{ static_cast<float>(endX * 100 + 50), static_cast<float>(endY * 100 + 50) });
             }
         }
     }
 
-    return false;
+    return result;
 }
+
 
 // bool Game::isMoveLegal(Pawn pawn, Vector2 new_position, std::vector <std::vector<bool>> fields()) {
 //     if(pawn.is_alive){
@@ -88,6 +90,7 @@ bool Game::isBeatingAvailable(Pawn* pawn) {
 //         }
 //     }
 // }
+
 
 bool Game::colorsEqual(Color c1, Color c2) {
     return c1.r == c2.r && c1.g == c2.g && c1.b == c2.b && c1.a == c2.a;
