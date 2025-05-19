@@ -25,7 +25,7 @@ void Board::fillPawns() {
     for (int row = 0; row < 3; ++row) {
         for (int col = 0; col < 8; ++col) {
             if ((row + col) % 2 == 1) {
-                Vector2 pos = { col * 100 + 50, row * 100 + 50 };
+                Vector2 pos = { float(col * 100 + 50), float(row * 100 + 50) };
                 board[row][col] = new Pawn(BLACK, pos);
             }
         }
@@ -34,7 +34,7 @@ void Board::fillPawns() {
     for (int row = 5; row < 8; ++row) {
         for (int col = 0; col < 8; ++col) {
             if ((row + col) % 2 == 1) {
-                Vector2 pos = { col * 100 + 50, row * 100 + 50 };
+                Vector2 pos = { float(col * 100 + 50), float(row * 100 + 50) };
                 board[row][col] = new Pawn(WHITE, pos);
             }
         }
