@@ -30,6 +30,7 @@ void Game::mainLoop() {
         case GameState::InGame:
             board.drawBoard();
             board.drawPawns();
+            mouseControl();
             if (IsKeyPressed(KEY_ESCAPE)) {
                 changeGameState(GameState::InPause);
             }
@@ -58,6 +59,28 @@ bool Game::isPawnSelected(Pawn* pawn) {
         return board.board[gridY][gridX] == pawn;
     }
     return false;
+}
+
+void Game::mouseControl() {
+    if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+        Vector2 mousePos = GetMousePosition();
+        int gridX = static_cast<int>(mousePos.x) / 100;
+        int gridY = static_cast<int>(mousePos.y) / 100;
+
+        std::cout << "gridX: " << gridX << " gridY: " << gridY << std::endl;
+
+        if (gridX >= 0 && gridX < 8 && gridY >= 0 && gridY < 8) {
+                  
+            if (pawn_selected) {
+                // TODO: add logic for moving the pawn
+            }
+            else {
+                Pawn* selectedPawn = board.board[gridY][gridX];
+                this->pawn_selected = isPawnSelected(selectedPawn);
+                pawn_selected = false;
+            }
+        }
+    }
 }
 
 std::vector<Vector2> Game::isBeatingAvailable(Pawn* pawn) {
