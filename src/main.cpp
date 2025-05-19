@@ -12,6 +12,7 @@ int main() {
     Game game;
     
     SetTargetFPS(60);
+    SetExitKey(0);
 
     while (!WindowShouldClose()) {
 
