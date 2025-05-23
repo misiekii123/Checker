@@ -78,12 +78,12 @@ std::vector<Vector2> Game::whereIsBeatingAvailable(Pawn* pawn) {
     std::vector<Vector2> result;
     if (!pawn || !pawn->is_alive) return result;
 
-    if(!pawn->is_queen) {
-        int directions[4][2] = { {-1, -1}, {1, -1}, {-1, 1}, {1, 1} };
-        Vector2 pos = pawn->getPosition();
-        int gridX = static_cast<int>(pos.x) / 100;
-        int gridY = static_cast<int>(pos.y) / 100;
+    int directions[4][2] = { {-1, -1}, {1, -1}, {-1, 1}, {1, 1} };
+    Vector2 pos = pawn->getPosition();
+    int gridX = static_cast<int>(pos.x) / 100;
+    int gridY = static_cast<int>(pos.y) / 100;
 
+    if(!pawn->is_queen) {
         for (int d = 0; d < 4; ++d) {
             int dx = directions[d][0];
             int dy = directions[d][1];
@@ -105,11 +105,6 @@ std::vector<Vector2> Game::whereIsBeatingAvailable(Pawn* pawn) {
         }
     }
     else {
-        int directions[4][2] = { {-1, -1}, {1, -1}, {-1, 1}, {1, 1} };
-        Vector2 pos = pawn->getPosition();
-        int gridX = static_cast<int>(pos.x) / 100;
-        int gridY = static_cast<int>(pos.y) / 100;
-
         for (int d = 0; d < 4; ++d) {
             int dx = directions[d][0];
             int dy = directions[d][1];
@@ -148,6 +143,124 @@ std::vector<Vector2> Game::whereIsBeatingAvailable(Pawn* pawn) {
 
     return result;
 }
+
+void Game::simulateMultiBeating(Pawn* pawn, std::vector<Vector2> current_path, std::vector<Vector2>& best_path) {
+    Vector2 pos = pawn->getPosition();
+    int gridX = static_cast<int>(pos.x) / 100;
+    int gridY = static_cast<int>(pos.y) / 100;
+
+    int directions[4][2] = { {-1, -1}, {1, -1}, {-1, 1}, {1, 1} };
+    bool beat_found = false;
+
+    for (int d = 0; d < 4; ++d) {
+        int dx = directions[d][0];
+        int dy = directions[d][1];
+
+        if (!pawn->is_queen) {
+            int midX = gridX + dx;
+            int midY = gridY + dy;
+            int endX = gridX + 2 * dx;
+            int endY = gridY + 2 * dy;
+
+            if (midX >= 0 && midX < 8 && midY >= 0 && midY < 8 &&
+                endX >= 0 && endX < 8 && endY >= 0 && endY < 8) {
+
+                Pawn* mid = board.board[midY][midX];
+                Pawn* end = board.board[endY][endX];
+
+                if (mid && !colorsEqual(mid->pawn_color, pawn->pawn_color) && end == nullptr) {
+                    beat_found = true;
+
+                    Game clonedGame = *this;
+                    Pawn* moved = clonedGame.board.board[gridY][gridX];
+                    Pawn* captured = clonedGame.board.board[midY][midX];
+
+                    clonedGame.board.board[gridY][gridX] = nullptr;
+                    clonedGame.board.board[midY][midX] = nullptr;
+                    captured->is_alive = false;
+
+                    Vector2 newPos = Vector2{ static_cast<float>(endX * 100 + 50), static_cast<float>(endY * 100 + 50) };
+                    moved->changePosition(newPos);
+                    clonedGame.board.board[endY][endX] = moved;
+
+                    std::vector<Vector2> new_path = current_path;
+                    new_path.push_back(newPos);
+
+                    clonedGame.simulateMultiBeating(moved, new_path, best_path);
+                }
+            }
+
+        } else {
+            int x = gridX + dx;
+            int y = gridY + dy;
+
+            bool enemyFound = false;
+            int capturedX = -1, capturedY = -1;
+
+            while (x >= 0 && x < 8 && y >= 0 && y < 8) {
+                Pawn* current = board.board[y][x];
+
+                if (!enemyFound) {
+                    if (current == nullptr) {
+                        x += dx;
+                        y += dy;
+                        continue;
+                    }
+                    if (!colorsEqual(current->pawn_color, pawn->pawn_color)) {
+                        enemyFound = true;
+                        capturedX = x;
+                        capturedY = y;
+                        x += dx;
+                        y += dy;
+                    } else {
+                        break;
+                    }
+                } else {
+                    if (current != nullptr) break;
+
+                    beat_found = true;
+
+                    Game clonedGame = *this;
+                    Pawn* moved = clonedGame.board.board[gridY][gridX];
+                    Pawn* captured = clonedGame.board.board[capturedY][capturedX];
+
+                    clonedGame.board.board[gridY][gridX] = nullptr;
+                    clonedGame.board.board[capturedY][capturedX] = nullptr;
+                    captured->is_alive = false;
+
+                    Vector2 newPos = Vector2{ static_cast<float>(x * 100 + 50), static_cast<float>(y * 100 + 50) };
+                    moved->changePosition(newPos);
+                    clonedGame.board.board[y][x] = moved;
+
+                    std::vector<Vector2> new_path = current_path;
+                    new_path.push_back(newPos);
+
+                    clonedGame.simulateMultiBeating(moved, new_path, best_path);
+
+                    x += dx;
+                    y += dy;
+                }
+            }
+        }
+    }
+
+    if (!beat_found && current_path.size() > best_path.size()) {
+        best_path = current_path;
+    }
+}
+
+
+
+std::vector<Vector2> Game::multipleBeatings(Pawn* pawn) {
+    std::vector<Vector2> best_path;
+    Vector2 start = pawn->getPosition();
+    std::vector<Vector2> current_path = { start };
+
+    simulateMultiBeating(pawn, current_path, best_path);
+
+    return best_path;
+}
+
 
 
 // std::vector<Vector2> Game::legalMoves(Pawn* pawn) {
