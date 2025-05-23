@@ -27,6 +27,6 @@ public:
     void startGame();
     void mainLoop();
     Game();
-    bool isMoveLegal(Pawn pawn, Vector2 new_position, std::vector <std::vector<bool>> fields());
-    std::vector<Vector2> isBeatingAvailable(Pawn* pawn);
+    std::vector<Vector2> legalMoves(Pawn* pawn);
+    std::vector<Vector2> whereIsBeatingAvailable(Pawn* pawn);
 };

@@ -74,7 +74,7 @@ void Game::mouseControl() {
     }
 }
 
-std::vector<Vector2> Game::isBeatingAvailable(Pawn* pawn) {
+std::vector<Vector2> Game::whereIsBeatingAvailable(Pawn* pawn) {
     std::vector<Vector2> result;
     if (!pawn || !pawn->is_alive) return result;
 
@@ -150,7 +150,7 @@ std::vector<Vector2> Game::isBeatingAvailable(Pawn* pawn) {
 }
 
 
-// bool Game::isMoveLegal(Pawn pawn, Vector2 new_position, std::vector <std::vector<bool>> fields()) {
+// std::vector<Vector2> Game::legalMoves(Pawn* pawn) {
 //     if(pawn.is_alive){
 //         if(!fields[new_position.x][new_position.y]) {
 //             if(pawn.is_queen) {
