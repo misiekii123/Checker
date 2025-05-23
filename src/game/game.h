@@ -29,6 +29,6 @@ public:
     Game();
     std::vector<Vector2> legalMoves(Pawn* pawn);
     std::vector<Vector2> whereIsBeatingAvailable(Pawn* pawn);
-    void Game::simulateMultiBeating(Pawn* pawn, std::vector<Vector2> current_path, std::vector<Vector2>& best_path);
+    void simulateMultiBeating(Pawn* pawn, std::vector<Vector2> current_path, std::vector<Vector2>& best_path);
     std::vector<Vector2> multipleBeatings(Pawn* pawn);
 };
