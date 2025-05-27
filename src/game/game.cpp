@@ -83,7 +83,7 @@ std::vector<Vector2> Game::whereIsBeatingAvailable(Pawn* pawn) {
     int gridX = static_cast<int>(pos.x) / 100;
     int gridY = static_cast<int>(pos.y) / 100;
 
-    if(!pawn->is_queen) {
+    if (!pawn->is_queen) {
         for (int d = 0; d < 4; ++d) {
             int dx = directions[d][0];
             int dy = directions[d][1];
@@ -103,16 +103,14 @@ std::vector<Vector2> Game::whereIsBeatingAvailable(Pawn* pawn) {
                 }
             }
         }
-    }
-    else {
+    } else {
         for (int d = 0; d < 4; ++d) {
             int dx = directions[d][0];
             int dy = directions[d][1];
-            
+
             int x = gridX + dx;
             int y = gridY + dy;
             bool enemyFound = false;
-            Pawn* captured = nullptr;
 
             while (x >= 0 && x < 8 && y >= 0 && y < 8) {
                 Pawn* current = board.board[y][x];
@@ -125,7 +123,6 @@ std::vector<Vector2> Game::whereIsBeatingAvailable(Pawn* pawn) {
                     if (!enemyFound) {
                         if (!colorsEqual(current->pawn_color, pawn->pawn_color)) {
                             enemyFound = true;
-                            captured = current;
                         } else {
                             break;
                         }
@@ -138,13 +135,13 @@ std::vector<Vector2> Game::whereIsBeatingAvailable(Pawn* pawn) {
                 y += dy;
             }
         }
-
     }
 
     return result;
 }
 
-void Game::simulateMultiBeating(Pawn* pawn, std::vector<Vector2> current_path, std::vector<Vector2>& best_path) {
+
+void Game::simulateMultiBeating(Pawn* pawn, std::vector<Vector2> current_path, std::vector<std::vector<Vector2>>& all_paths) {
     Vector2 pos = pawn->getPosition();
     int gridX = static_cast<int>(pos.x) / 100;
     int gridY = static_cast<int>(pos.y) / 100;
@@ -186,7 +183,7 @@ void Game::simulateMultiBeating(Pawn* pawn, std::vector<Vector2> current_path, s
                     std::vector<Vector2> new_path = current_path;
                     new_path.push_back(newPos);
 
-                    clonedGame.simulateMultiBeating(moved, new_path, best_path);
+                    clonedGame.simulateMultiBeating(moved, new_path, all_paths);
                 }
             }
 
@@ -235,7 +232,7 @@ void Game::simulateMultiBeating(Pawn* pawn, std::vector<Vector2> current_path, s
                     std::vector<Vector2> new_path = current_path;
                     new_path.push_back(newPos);
 
-                    clonedGame.simulateMultiBeating(moved, new_path, best_path);
+                    clonedGame.simulateMultiBeating(moved, new_path, all_paths);
 
                     x += dx;
                     y += dy;
@@ -244,41 +241,40 @@ void Game::simulateMultiBeating(Pawn* pawn, std::vector<Vector2> current_path, s
         }
     }
 
-    if (!beat_found && current_path.size() > best_path.size()) {
-        best_path = current_path;
+    if (!beat_found && current_path.size() > 1) {
+        all_paths.push_back(current_path);
     }
 }
 
 
-
-std::vector<Vector2> Game::multipleBeatings(Pawn* pawn) {
-    std::vector<Vector2> best_path;
+std::vector<std::vector<Vector2>> Game::multipleBeatings(Pawn* pawn) {
+    std::vector<std::vector<Vector2>> all_paths;
     Vector2 start = pawn->getPosition();
     std::vector<Vector2> current_path = { start };
 
-    simulateMultiBeating(pawn, current_path, best_path);
+    simulateMultiBeating(pawn, current_path, all_paths);
 
-    return best_path;
+    size_t max_length = 0;
+    for (const auto& path : all_paths) {
+        if (path.size() > max_length) {
+            max_length = path.size();
+        }
+    }
+
+    std::vector<std::vector<Vector2>> longest_paths;
+    for (const auto& path : all_paths) {
+        if (path.size() == max_length) {
+            longest_paths.push_back(path);
+        }
+    }
+
+    return longest_paths;
 }
 
 
+std::vector<std::vector<Vector2>> legalMoves(Pawn* pawn) {
 
-// std::vector<Vector2> Game::legalMoves(Pawn* pawn) {
-//     if(pawn.is_alive){
-//         if(!fields[new_position.x][new_position.y]) {
-//             if(pawn.is_queen) {
-//                 if(abs((new_position.y - pawn.getPosition().y)/(new_position.x - pawn.getPosition().x)) == 1) //TODO: ADD checking for pawns on the way
-//                     return 1;
-//                 else
-//                     return 0;
-//             }
-//             else {
-                
-//             }
-//         }
-//     }
-// }
-
+}
 
 bool Game::colorsEqual(Color c1, Color c2) {
     return c1.r == c2.r && c1.g == c2.g && c1.b == c2.b && c1.a == c2.a;
