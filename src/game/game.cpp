@@ -272,9 +272,59 @@ std::vector<std::vector<Vector2>> Game::multipleBeatings(Pawn* pawn) {
 }
 
 
-std::vector<std::vector<Vector2>> legalMoves(Pawn* pawn) {
+std::vector<std::vector<Vector2>> Game::legalMoves(Pawn* pawn) {
+    std::vector<std::vector<Vector2>> result;
 
+    if (!pawn || !pawn->is_alive) return result;
+
+    if (!whereIsBeatingAvailable(pawn).empty()) {
+        return multipleBeatings(pawn);
+    }
+
+    Vector2 pos = pawn->getPosition();
+    int gridX = static_cast<int>(pos.x) / 100;
+    int gridY = static_cast<int>(pos.y) / 100;
+
+    int directions[4][2] = { {-1, -1}, {1, -1}, {-1, 1}, {1, 1} };
+
+    if (!pawn->is_queen) {
+        int dy = colorsEqual(pawn->pawn_color, WHITE) ? -1 : 1;
+
+        for (int dx = -1; dx <= 1; dx += 2) {
+            int x = gridX + dx;
+            int y = gridY + dy;
+
+            if (x >= 0 && x < 8 && y >= 0 && y < 8 && board.board[y][x] == nullptr) {
+                Vector2 move = Vector2{ static_cast<float>(x * 100 + 50), static_cast<float>(y * 100 + 50) };
+                result.push_back({ pos, move });
+            }
+        }
+
+    } else {
+        for (int d = 0; d < 4; ++d) {
+            int dx = directions[d][0];
+            int dy = directions[d][1];
+            int x = gridX + dx;
+            int y = gridY + dy;
+
+            while (x >= 0 && x < 8 && y >= 0 && y < 8) {
+                if (board.board[y][x] == nullptr) {
+                    Vector2 move = Vector2{ static_cast<float>(x * 100 + 50), static_cast<float>(y * 100 + 50) };
+                    result.push_back({ pos, move });
+                } else {
+                    break;
+                }
+
+                x += dx;
+                y += dy;
+            }
+        }
+    }
+
+    return result;
 }
+
+
 
 bool Game::colorsEqual(Color c1, Color c2) {
     return c1.r == c2.r && c1.g == c2.g && c1.b == c2.b && c1.a == c2.a;
