@@ -41,6 +41,15 @@ void Game::mainLoop() {
     }
 }
 
+void Game::drawPawnSelection(Pawn* pawn) {
+    if (pawn && pawn->is_alive) {
+        Vector2 pos = pawn->getPosition();
+        std::cout << "Drawing selection for pawn at position: " << pos.x << ", " << pos.y << std::endl;
+        Rectangle selectionRect = { pos.x - 50, pos.y - 50, 100, 100 };
+        DrawRectangleLinesEx(selectionRect, 5.0f, YELLOW);
+    }
+}
+
 bool Game::isPawnSelected(Pawn* pawn) {
     if (pawn) {
         Vector2 pos = pawn->getPosition();
@@ -63,12 +72,12 @@ void Game::mouseControl() {
         if (gridX >= 0 && gridX < 8 && gridY >= 0 && gridY < 8) {
                   
             if (pawn_selected) {
-                // TODO: add logic for moving the pawn
+                Pawn* selectedPawn = board.board[gridY][gridX];
+                drawPawnSelection(selectedPawn);
             }
             else {
                 Pawn* selectedPawn = board.board[gridY][gridX];
                 this->pawn_selected = isPawnSelected(selectedPawn);
-                pawn_selected = false;
             }
         }
     }
@@ -139,7 +148,6 @@ std::vector<Vector2> Game::whereIsBeatingAvailable(Pawn* pawn) {
 
     return result;
 }
-
 
 void Game::simulateMultiBeating(Pawn* pawn, std::vector<Vector2> current_path, std::vector<std::vector<Vector2>>& all_paths) {
     Vector2 pos = pawn->getPosition();

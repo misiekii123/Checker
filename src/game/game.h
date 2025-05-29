@@ -22,6 +22,7 @@ private:
     bool isPawnSelected(Pawn* pawn);
     void mouseControl();
     bool colorsEqual(Color c1, Color c2);
+    void drawPawnSelection(Pawn* pawn);
 public:
     void changeGameState(GameState newState);
     void startGame();
