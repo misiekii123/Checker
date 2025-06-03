@@ -141,7 +141,7 @@ std::vector<Vector2> Game::whereIsBeatingAvailable(Pawn* pawn) {
             }
         }
     }
-     
+
     return result;
 }
 
@@ -149,7 +149,7 @@ void Game::drawAwailableBeating(std::vector<Vector2> availableBeatings) {
     for (const auto& pos : availableBeatings) {
         Vector2 rect_pos = { pos.x - 50, pos.y - 50 };
         Vector2 rect_size = { 100, 100 };
-        DrawRectangleV(rect_pos, rect_size, Color{ 255, 255, 0, 100 });
+        DrawRectangleV(rect_pos, rect_size, Color{ 255, 0, 0, 100 });
     }
 }
 
