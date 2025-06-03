@@ -20,6 +20,8 @@ private:
     Board board;
     bool pawn_selected = false;
     Pawn* selectedPawn = nullptr;
+    Color player_color = WHITE; 
+    Color enemy_color = BLACK;
     void mouseControl();
     void drawPawnSelection(Pawn* pawn);
     void drawAwailableBeating(std::vector<Vector2> availableBeating);

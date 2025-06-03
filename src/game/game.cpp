@@ -126,7 +126,7 @@ void Game::mouseControl() {
                 }
             }
 
-            else if (clickedPawn && clickedPawn->is_alive) {
+            else if (clickedPawn && clickedPawn->is_alive && ColorIsEqual(clickedPawn->pawn_color, player_color)) {
                 selectedPawn = clickedPawn;
                 pawn_selected = true;
             }
