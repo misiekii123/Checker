@@ -23,7 +23,10 @@ private:
     void mouseControl();
     void drawPawnSelection(Pawn* pawn);
     void drawAwailableBeating(std::vector<Vector2> availableBeating);
-    void drawAwailableMoves(std::vector<std::vector<Vector2>> availableMoves);
+    void drawAwailableMoves(std::vector<std::vector<Vector2>> availableMoves);    
+    void simulateMultiBeating(Pawn* pawn, std::vector<Vector2> current_path, std::vector<std::vector<Vector2>>& all_paths);
+    void simulateMultiBeatingInternal(Pawn* tempBoard[8][8], int x, int y, std::vector<Vector2> current_path, std::vector<std::vector<Vector2>>& all_paths, Color color);
+    bool isInsideBoard(int x, int y);
 public:
     void changeGameState(GameState newState);
     void startGame();
@@ -31,6 +34,5 @@ public:
     Game();
     std::vector<std::vector<Vector2>> legalMoves(Pawn* pawn);
     std::vector<Vector2> whereIsBeatingAvailable(Pawn* pawn);
-    void simulateMultiBeating(Pawn* pawn, std::vector<Vector2> current_path, std::vector<std::vector<Vector2>>& all_paths);
     std::vector<std::vector<Vector2>> multipleBeatings(Pawn* pawn);
 };
