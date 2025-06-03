@@ -22,6 +22,7 @@ private:
     Pawn* selectedPawn = nullptr;
     void mouseControl();
     void drawPawnSelection(Pawn* pawn);
+    void drawAwailableBeating(std::vector<Vector2> availableBeating);
 public:
     void changeGameState(GameState newState);
     void startGame();

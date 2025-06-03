@@ -24,6 +24,7 @@ void Game::mainLoop() {
             mouseControl();
             if (pawn_selected && selectedPawn) {
                 drawPawnSelection(selectedPawn);
+                drawAwailableBeating(whereIsBeatingAvailable(selectedPawn));
             }
             if (IsKeyPressed(KEY_ESCAPE)) {
                 changeGameState(GameState::InPause);
@@ -141,7 +142,18 @@ std::vector<Vector2> Game::whereIsBeatingAvailable(Pawn* pawn) {
         }
     }
 
+    for (auto& pos : result) {
+        std::cout << "Available beating at: (" << pos.x << ", " << pos.y << ")\n";
+    }  
     return result;
+}
+
+void Game::drawAwailableBeating(std::vector<Vector2> availableBeatings) {
+    for (const auto& pos : availableBeatings) {
+        Vector2 rect_pos = { pos.x - 50, pos.y - 50 };
+        Vector2 rect_size = { 100, 100 };
+        DrawRectangleV(rect_pos, rect_size, Color{ 255, 255, 0, 100 });
+    }
 }
 
 void Game::simulateMultiBeating(Pawn* pawn, std::vector<Vector2> current_path, std::vector<std::vector<Vector2>>& all_paths) {
