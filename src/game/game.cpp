@@ -93,6 +93,33 @@ void Game::mouseControl() {
                         }
                     }
                 }
+
+                for (const auto& move : whereIsBeatingAvailable(selectedPawn)) {
+                    int moveGridX = static_cast<int>(move.x) / 100;
+                    int moveGridY = static_cast<int>(move.y) / 100;
+
+                    if (moveGridX == gridX && moveGridY == gridY) {
+                        Vector2 newPos = move;
+
+                        int oldX = static_cast<int>(selectedPawn->getPosition().x) / 100;
+                        int oldY = static_cast<int>(selectedPawn->getPosition().y) / 100;
+
+                        Pawn* midPawn = board.board[(oldY + gridY) / 2][(oldX + gridX) / 2];
+                        if (midPawn) {
+                            midPawn->is_alive = false; 
+                            delete midPawn;
+                            board.board[(oldY + gridY) / 2][(oldX + gridX) / 2] = nullptr;
+                        }
+
+                        board.board[oldY][oldX] = nullptr;
+                        board.board[gridY][gridX] = selectedPawn;
+                        selectedPawn->changePosition(newPos);
+
+                        selectedPawn = nullptr;
+                        pawn_selected = false;
+                        break;
+                    }
+                }
             }
 
             else if (clickedPawn && clickedPawn->is_alive) {
