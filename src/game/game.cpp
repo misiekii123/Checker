@@ -25,6 +25,7 @@ void Game::mainLoop() {
             if (pawn_selected && selectedPawn) {
                 drawPawnSelection(selectedPawn);
                 drawAwailableBeating(whereIsBeatingAvailable(selectedPawn));
+                drawAwailableMoves(legalMoves(selectedPawn));
             }
             if (IsKeyPressed(KEY_ESCAPE)) {
                 changeGameState(GameState::InPause);
@@ -334,4 +335,16 @@ std::vector<std::vector<Vector2>> Game::legalMoves(Pawn* pawn) {
     }
 
     return result;
+}
+
+void Game::drawAwailableMoves(std::vector<std::vector<Vector2>> availableMoves) {
+    for (const auto& move : availableMoves) {
+        if (move.size() == 2) {
+            Vector2 start = move[0];
+            Vector2 end = move[1];
+            Vector2 rect_pos = { end.x - 50, end.y - 50 };
+            Vector2 rect_size = { 100, 100 };
+            DrawRectangleV(rect_pos, rect_size, Color{ 0, 255, 0, 100 });
+        }
+    }
 }
