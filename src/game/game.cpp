@@ -102,7 +102,7 @@ std::vector<Vector2> Game::whereIsBeatingAvailable(Pawn* pawn) {
                 Pawn* mid = board.board[midY][midX];
                 Pawn* end = board.board[endY][endX];
 
-                if (mid && !colorsEqual(mid->pawn_color, pawn->pawn_color) && end == nullptr) {
+                if (mid && !ColorIsEqual(mid->pawn_color, pawn->pawn_color) && end == nullptr) {
                     result.push_back(Vector2{ static_cast<float>(endX * 100 + 50), static_cast<float>(endY * 100 + 50) });
                 }
             }
@@ -125,7 +125,7 @@ std::vector<Vector2> Game::whereIsBeatingAvailable(Pawn* pawn) {
                     }
                 } else {
                     if (!enemyFound) {
-                        if (!colorsEqual(current->pawn_color, pawn->pawn_color)) {
+                        if (!ColorIsEqual(current->pawn_color, pawn->pawn_color)) {
                             enemyFound = true;
                         } else {
                             break;
@@ -168,7 +168,7 @@ void Game::simulateMultiBeating(Pawn* pawn, std::vector<Vector2> current_path, s
                 Pawn* mid = board.board[midY][midX];
                 Pawn* end = board.board[endY][endX];
 
-                if (mid && !colorsEqual(mid->pawn_color, pawn->pawn_color) && end == nullptr) {
+                if (mid && !ColorIsEqual(mid->pawn_color, pawn->pawn_color) && end == nullptr) {
                     beat_found = true;
 
                     Game clonedGame = *this;
@@ -206,7 +206,7 @@ void Game::simulateMultiBeating(Pawn* pawn, std::vector<Vector2> current_path, s
                         y += dy;
                         continue;
                     }
-                    if (!colorsEqual(current->pawn_color, pawn->pawn_color)) {
+                    if (!ColorIsEqual(current->pawn_color, pawn->pawn_color)) {
                         enemyFound = true;
                         capturedX = x;
                         capturedY = y;
@@ -291,7 +291,7 @@ std::vector<std::vector<Vector2>> Game::legalMoves(Pawn* pawn) {
     int directions[4][2] = { {-1, -1}, {1, -1}, {-1, 1}, {1, 1} };
 
     if (!pawn->is_queen) {
-        int dy = colorsEqual(pawn->pawn_color, WHITE) ? -1 : 1;
+        int dy = ColorIsEqual(pawn->pawn_color, WHITE) ? -1 : 1;
 
         for (int dx = -1; dx <= 1; dx += 2) {
             int x = gridX + dx;
@@ -325,10 +325,4 @@ std::vector<std::vector<Vector2>> Game::legalMoves(Pawn* pawn) {
     }
 
     return result;
-}
-
-
-
-bool Game::colorsEqual(Color c1, Color c2) {
-    return c1.r == c2.r && c1.g == c2.g && c1.b == c2.b && c1.a == c2.a;
 }
