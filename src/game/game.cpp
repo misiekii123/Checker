@@ -87,6 +87,10 @@ void Game::mouseControl() {
                             board.board[gridY][gridX] = selectedPawn;
                             selectedPawn->changePosition(newPos);
 
+                            if (!selectedPawn->is_queen && (gridY == 0 || gridY == 7)) {
+                                selectedPawn->is_queen = true;
+                            }
+
                             selectedPawn = nullptr;
                             pawn_selected = false;
                             break;
