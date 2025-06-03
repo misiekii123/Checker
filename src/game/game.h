@@ -19,7 +19,7 @@ private:
     Ui ui;
     Board board;
     bool pawn_selected = false;
-    bool isPawnSelected(Pawn* pawn);
+    Pawn* selectedPawn = nullptr;
     void mouseControl();
     bool colorsEqual(Color c1, Color c2);
     void drawPawnSelection(Pawn* pawn);

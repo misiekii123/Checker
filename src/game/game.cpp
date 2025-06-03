@@ -22,6 +22,9 @@ void Game::mainLoop() {
             board.drawBoard();
             board.drawPawns();
             mouseControl();
+            if (pawn_selected && selectedPawn) {
+                drawPawnSelection(selectedPawn);
+            }
             if (IsKeyPressed(KEY_ESCAPE)) {
                 changeGameState(GameState::InPause);
             }
@@ -44,22 +47,11 @@ void Game::mainLoop() {
 void Game::drawPawnSelection(Pawn* pawn) {
     if (pawn && pawn->is_alive) {
         Vector2 pos = pawn->getPosition();
-        std::cout << "Drawing selection for pawn at position: " << pos.x << ", " << pos.y << std::endl;
         Rectangle selectionRect = { pos.x - 50, pos.y - 50, 100, 100 };
         DrawRectangleLinesEx(selectionRect, 5.0f, YELLOW);
     }
 }
 
-bool Game::isPawnSelected(Pawn* pawn) {
-    if (pawn) {
-        Vector2 pos = pawn->getPosition();
-        int gridX = static_cast<int>(pos.x) / 100;
-        int gridY = static_cast<int>(pos.y) / 100;
-        std::cout << "gridX: " << gridX << " gridY: " << gridY << std::endl;
-        return board.board[gridY][gridX] == pawn;
-    }
-    return false;
-}
 
 void Game::mouseControl() {
     if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
@@ -67,17 +59,20 @@ void Game::mouseControl() {
         int gridX = static_cast<int>(mousePos.x) / 100;
         int gridY = static_cast<int>(mousePos.y) / 100;
 
-        std::cout << "gridX: " << gridX << " gridY: " << gridY << std::endl;
-
         if (gridX >= 0 && gridX < 8 && gridY >= 0 && gridY < 8) {
-                  
-            if (pawn_selected) {
-                Pawn* selectedPawn = board.board[gridY][gridX];
-                drawPawnSelection(selectedPawn);
+            Pawn* clickedPawn = board.board[gridY][gridX];
+
+            if (pawn_selected && clickedPawn == selectedPawn) {
+                selectedPawn = nullptr;
+                pawn_selected = false;
+            }
+            else if (clickedPawn && clickedPawn->is_alive) {
+                selectedPawn = clickedPawn;
+                pawn_selected = true;
             }
             else {
-                Pawn* selectedPawn = board.board[gridY][gridX];
-                this->pawn_selected = isPawnSelected(selectedPawn);
+                selectedPawn = nullptr;
+                pawn_selected = false;
             }
         }
     }
