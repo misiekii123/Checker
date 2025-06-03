@@ -64,14 +64,47 @@ void Game::mouseControl() {
         if (gridX >= 0 && gridX < 8 && gridY >= 0 && gridY < 8) {
             Pawn* clickedPawn = board.board[gridY][gridX];
 
+            // Kliknięto ten sam pionek — odznacz
             if (pawn_selected && clickedPawn == selectedPawn) {
                 selectedPawn = nullptr;
                 pawn_selected = false;
             }
+
+            // Próba ruchu
+            else if (pawn_selected && clickedPawn == nullptr) {
+                std::vector<std::vector<Vector2>> availableMoves = legalMoves(selectedPawn);
+
+                for (const auto& move : availableMoves) {
+                    if (move.size() == 2) {
+                        int moveGridX = static_cast<int>(move[1].x) / 100;
+                        int moveGridY = static_cast<int>(move[1].y) / 100;
+
+                        if (moveGridX == gridX && moveGridY == gridY) {
+                            // Wykonaj ruch
+                            Vector2 newPos = move[1];
+
+                            int oldX = static_cast<int>(selectedPawn->getPosition().x) / 100;
+                            int oldY = static_cast<int>(selectedPawn->getPosition().y) / 100;
+
+                            board.board[oldY][oldX] = nullptr;
+                            board.board[gridY][gridX] = selectedPawn;
+                            selectedPawn->changePosition(newPos);
+
+                            selectedPawn = nullptr;
+                            pawn_selected = false;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            // Kliknięto inny pionek — zaznacz
             else if (clickedPawn && clickedPawn->is_alive) {
                 selectedPawn = clickedPawn;
                 pawn_selected = true;
             }
+
+            // Kliknięto w nic — odznacz
             else {
                 selectedPawn = nullptr;
                 pawn_selected = false;
@@ -79,6 +112,7 @@ void Game::mouseControl() {
         }
     }
 }
+
 
 std::vector<Vector2> Game::whereIsBeatingAvailable(Pawn* pawn) {
     std::vector<Vector2> result;
