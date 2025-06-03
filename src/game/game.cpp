@@ -141,10 +141,7 @@ std::vector<Vector2> Game::whereIsBeatingAvailable(Pawn* pawn) {
             }
         }
     }
-
-    for (auto& pos : result) {
-        std::cout << "Available beating at: (" << pos.x << ", " << pos.y << ")\n";
-    }  
+     
     return result;
 }
 
