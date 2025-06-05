@@ -5,6 +5,7 @@
 Game::Game() {
     currentState = GameState::InMenu;
     this->board = Board(Vector2{8, 8});
+    this->beatings = Beatings();
 }
 
 void Game::changeGameState(GameState newState) {

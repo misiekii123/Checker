@@ -3,6 +3,7 @@
 #include <raylib.h>
 #include "board/board.h"
 #include "ui/ui.h"
+#include "beatings/beatings.h"
 #include <pawn/pawn.h>
 #include <board/board.h>
 #include <vector>
@@ -16,6 +17,7 @@ enum class GameState {
 class Game {
 private:
     GameState currentState;
+    Beatings beatings;
     Ui ui;
     Board board;
     bool pawn_selected = false;
