@@ -9,6 +9,7 @@ file(GLOB_RECURSE SOURCES
     src/pawn/*.cpp
     src/ui/*.cpp
     src/ai/*.cpp
+    src/beatings/*.cpp
     src/utils/*.h
     src/main.cpp
 )

@@ -3,6 +3,7 @@
 #include <raylib.h>
 #include "board/board.h"
 #include "ui/ui.h"
+#include "beatings/beatings.h"
 #include <pawn/pawn.h>
 #include <board/board.h>
 #include <vector>
@@ -11,25 +12,22 @@
 class Game {
 private:
     GameState currentState;
+    Beatings beatings;
     Ui ui;
     Board board;
     bool pawn_selected = false;
     Pawn* selectedPawn = nullptr;
     Color player_color = WHITE; 
     Color enemy_color = BLACK;
-    void mouseControl();
+    void mouseControl(Beatings* beatings);
     void drawPawnSelection(Pawn* pawn);
     void drawAwailableBeating(std::vector<Vector2> availableBeating);
     void drawAwailableMoves(std::vector<std::vector<Vector2>> availableMoves);    
-    void simulateMultiBeating(Pawn* pawn, std::vector<Vector2> current_path, std::vector<std::vector<Vector2>>& all_paths);
-    void simulateMultiBeatingInternal(Pawn* tempBoard[8][8], int x, int y, std::vector<Vector2> current_path, std::vector<std::vector<Vector2>>& all_paths, Color color);
     bool isInsideBoard(int x, int y);
 public:
     void changeGameState(GameState newState);
     void startGame();
-    void mainLoop();
+    void mainLoop(Beatings* beatings);
     Game();
-    std::vector<std::vector<Vector2>> legalMoves(Pawn* pawn);
-    std::vector<Vector2> whereIsBeatingAvailable(Pawn* pawn);
-    std::vector<std::vector<Vector2>> multipleBeatings(Pawn* pawn);
+    
 };
