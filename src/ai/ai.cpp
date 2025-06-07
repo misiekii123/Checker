@@ -24,9 +24,7 @@ int Ai::minimax(Pawn* pawn) {
 }
 
 std::vector<Vector2> Ai::move(Pawn* pawn, Ai* ai) {
-    if(ai->ai_level == Level::Easy) {
-        if() {
-
-        }
-    }
+    /*if(ai->ai_level == Level::Easy) {
+        
+    }*/
 }
