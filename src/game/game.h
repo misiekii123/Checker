@@ -6,12 +6,7 @@
 #include <pawn/pawn.h>
 #include <board/board.h>
 #include <vector>
-
-enum class GameState {
-    InGame,
-    InMenu,
-    InPause
-};
+#include <utils/utils.h>
 
 class Game {
 private:
