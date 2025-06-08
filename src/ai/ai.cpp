@@ -3,6 +3,18 @@
 #include "board/board.h"
 #include "beatings/beatings.h"
 
+void Ai::copyBoard(Pawn* src[8][8], Pawn* dest[8][8]) {
+    for (int row = 0; row < 8; ++row) {
+        for (int col = 0; col < 8; ++col) {
+            if (src[row][col]) {
+                dest[row][col] = new Pawn(*src[row][col]);
+            } else {
+                dest[row][col] = nullptr;
+            }
+        }
+    }
+}
+
 Pawn* Ai::chooseRandomPawn(Pawn* board[8][8], Ai* ai) {
     srand(time(nullptr));
     int choosedPawn = rand() % ai->number_of_pawns;
@@ -24,8 +36,8 @@ Pawn* Ai::chooseRandomPawn(Pawn* board[8][8], Ai* ai) {
 }
 
 
-int Ai::minimax(Pawn* pawn) {
-    
+int Ai::minimax(Pawn* pawn, Pawn* board[8][8]) {
+    //TODO
 }
 
 void Ai::move(Pawn* pawn, Ai* ai) {
@@ -39,7 +51,9 @@ void Ai::move(Pawn* pawn, Ai* ai) {
         srand(time(nullptr));
         int randomPath = rand()%beatings->legalMoves(pawn_to_move).size();
         pawn_to_move->changePosition(beatings->legalMoves(pawn_to_move)[randomPath].back());
-    } else if(ai->ai_level == Level::Hard) {
-
+    } else if(ai->ai_level == Level::Hard) { //TODO
+        /*if (bestPawn && !bestMove.empty()) {
+            bestPawn->changePosition(bestMove.back());
+        }*/
     }
 }
