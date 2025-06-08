@@ -74,24 +74,31 @@ std::vector<Vector2> Beatings::whereIsBeatingAvailable(Pawn* pawn) {
     return result;
 }
 
-void Beatings::simulateMultiBeating(Pawn* pawn, std::vector<Vector2> current_path, std::vector<std::vector<Vector2>>& all_paths) {
+void Beatings::simulateMultiBeating(Pawn* pawn, std::vector<Vector2> current_path, std::vector<std::vector<Vector2>>& all_paths, Board* board) {
     Pawn* tempBoard[8][8] = {nullptr};
-    Board board;
 
-    for (int y = 0; y < 8; ++y)
-        for (int x = 0; x < 8; ++x)
-            if (board.board[y][x])
-                tempBoard[y][x] = new Pawn(*board.board[y][x]);
+    for (int y = 0; y < 8; ++y) {
+        for (int x = 0; x < 8; ++x) {
+            if (board->board[y][x]) {
+                tempBoard[y][x] = new Pawn(*board->board[y][x]);
+            }
+        }
+    }
 
     int x = pawn->getPosition().x;
     int y = pawn->getPosition().y;
 
     simulateMultiBeatingInternal(tempBoard, x, y, current_path, all_paths, pawn->pawn_color);
 
-    for (int y = 0; y < 8; ++y)
-        for (int x = 0; x < 8; ++x)
-            delete tempBoard[y][x];
+    for (int y = 0; y < 8; ++y) {
+        for (int x = 0; x < 8; ++x) {
+            if (tempBoard[y][x]) {
+                delete tempBoard[y][x];
+            }
+        }
+    }
 }
+
 
 void Beatings::simulateMultiBeatingInternal(Pawn* tempBoard[8][8], int x, int y,
     std::vector<Vector2> current_path, std::vector<std::vector<Vector2>>& all_paths, Color color)
@@ -141,8 +148,9 @@ std::vector<std::vector<Vector2>> Beatings::multipleBeatings(Pawn* pawn) {
     std::vector<std::vector<Vector2>> all_paths;
     Vector2 start = pawn->getPosition();
     std::vector<Vector2> current_path = { start };
+    Board* board;
 
-    simulateMultiBeating(pawn, current_path, all_paths);
+    simulateMultiBeating(pawn, current_path, all_paths, board);
 
     size_t max_length = 0;
     for (const auto& path : all_paths) {
