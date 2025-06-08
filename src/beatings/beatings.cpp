@@ -1,13 +1,17 @@
 #include "beatings.h"
 #include "board/board.h"
 
+Beatings::Beatings() {}
+
 bool Beatings::isInsideBoard(int x, int y) {
     return x >= 0 && x < 8 && y >= 0 && y < 8;
 }
 
-std::vector<Vector2> Beatings::whereIsBeatingAvailable(Pawn* pawn, Board* board) {
+std::vector<Vector2> Beatings::whereIsBeatingAvailable(Pawn* pawn) {
     std::vector<Vector2> result;
     if (!pawn || !pawn->is_alive) return result;
+
+    Board board;
 
     int directions[4][2] = { {-1, -1}, {1, -1}, {-1, 1}, {1, 1} };
     Vector2 pos = pawn->getPosition();
@@ -26,8 +30,8 @@ std::vector<Vector2> Beatings::whereIsBeatingAvailable(Pawn* pawn, Board* board)
             if (midX >= 0 && midX < 8 && midY >= 0 && midY < 8 &&
                 endX >= 0 && endX < 8 && endY >= 0 && endY < 8) {
 
-                Pawn* mid = board->board[midY][midX];
-                Pawn* end = board->board[endY][endX];
+                Pawn* mid = board.board[midY][midX];
+                Pawn* end = board.board[endY][endX];
 
                 if (mid && !ColorIsEqual(mid->pawn_color, pawn->pawn_color) && end == nullptr) {
                     result.push_back(Vector2{ static_cast<float>(endX * 100 + 50), static_cast<float>(endY * 100 + 50) });
@@ -44,7 +48,7 @@ std::vector<Vector2> Beatings::whereIsBeatingAvailable(Pawn* pawn, Board* board)
             bool enemyFound = false;
 
             while (x >= 0 && x < 8 && y >= 0 && y < 8) {
-                Pawn* current = board->board[y][x];
+                Pawn* current = board.board[y][x];
 
                 if (current == nullptr) {
                     if (enemyFound) {
@@ -70,13 +74,14 @@ std::vector<Vector2> Beatings::whereIsBeatingAvailable(Pawn* pawn, Board* board)
     return result;
 }
 
-void Beatings::simulateMultiBeating(Pawn* pawn, std::vector<Vector2> current_path, std::vector<std::vector<Vector2>>& all_paths, Board* board) {
+void Beatings::simulateMultiBeating(Pawn* pawn, std::vector<Vector2> current_path, std::vector<std::vector<Vector2>>& all_paths) {
     Pawn* tempBoard[8][8] = {nullptr};
+    Board board;
 
     for (int y = 0; y < 8; ++y)
         for (int x = 0; x < 8; ++x)
-            if (board->board[y][x])
-                tempBoard[y][x] = new Pawn(*board->board[y][x]);
+            if (board.board[y][x])
+                tempBoard[y][x] = new Pawn(*board.board[y][x]);
 
     int x = pawn->getPosition().x;
     int y = pawn->getPosition().y;
@@ -156,8 +161,9 @@ std::vector<std::vector<Vector2>> Beatings::multipleBeatings(Pawn* pawn) {
     return longest_paths;
 }
 
-std::vector<std::vector<Vector2>> Beatings::legalMoves(Pawn* pawn, Board* board) {
+std::vector<std::vector<Vector2>> Beatings::legalMoves(Pawn* pawn) {
     std::vector<std::vector<Vector2>> result;
+    Board board;
 
     if (!pawn || !pawn->is_alive) return result;
 
@@ -178,7 +184,7 @@ std::vector<std::vector<Vector2>> Beatings::legalMoves(Pawn* pawn, Board* board)
             int x = gridX + dx;
             int y = gridY + dy;
 
-            if (x >= 0 && x < 8 && y >= 0 && y < 8 && board->board[y][x] == nullptr) {
+            if (x >= 0 && x < 8 && y >= 0 && y < 8 && board.board[y][x] == nullptr) {
                 Vector2 move = Vector2{ static_cast<float>(x * 100 + 50), static_cast<float>(y * 100 + 50) };
                 result.push_back({ pos, move });
             }
@@ -192,7 +198,7 @@ std::vector<std::vector<Vector2>> Beatings::legalMoves(Pawn* pawn, Board* board)
             int y = gridY + dy;
 
             while (x >= 0 && x < 8 && y >= 0 && y < 8) {
-                if (board->board[y][x] == nullptr) {
+                if (board.board[y][x] == nullptr) {
                     Vector2 move = Vector2{ static_cast<float>(x * 100 + 50), static_cast<float>(y * 100 + 50) };
                     result.push_back({ pos, move });
                 } else {

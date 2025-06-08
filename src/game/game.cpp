@@ -19,6 +19,7 @@ void Game::startGame() {
 }
 
 void Game::mainLoop(Beatings* beatings) {
+    Board board;
     switch (currentState) {
         case GameState::InGame:
             board.drawBoard();
@@ -58,6 +59,7 @@ void Game::drawPawnSelection(Pawn* pawn) {
 
 
 void Game::mouseControl(Beatings* beatings) {
+    Board board;
     if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
         Vector2 mousePos = GetMousePosition();
         int gridX = static_cast<int>(mousePos.x) / 100;
