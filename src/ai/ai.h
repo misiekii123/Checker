@@ -17,5 +17,5 @@ class Ai {
     public:
         Pawn* chooseRandomPawn(Pawn* board[8][8], Ai* ai);
         int minimax(Pawn* pawn);
-        std::vector<Vector2> move(Pawn* pawn, Ai* ai);
+        void move(Pawn* pawn, Ai* ai);
 };

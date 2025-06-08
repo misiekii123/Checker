@@ -4,6 +4,7 @@
 #include "beatings/beatings.h"
 
 Pawn* Ai::chooseRandomPawn(Pawn* board[8][8], Ai* ai) {
+    srand(time(nullptr));
     int choosedPawn = rand() % ai->number_of_pawns;
     int actPawn = 0;
 
@@ -27,7 +28,7 @@ int Ai::minimax(Pawn* pawn) {
     
 }
 
-std::vector<Vector2> Ai::move(Pawn* pawn, Ai* ai) {
+void Ai::move(Pawn* pawn, Ai* ai) {
     Pawn* board[8][8];
     Beatings* beatings;
     Pawn* pawn_to_move = nullptr;
@@ -35,9 +36,10 @@ std::vector<Vector2> Ai::move(Pawn* pawn, Ai* ai) {
         while(beatings->legalMoves(ai->chooseRandomPawn(board, ai)).empty()) {
             pawn_to_move = chooseRandomPawn(board, ai);
         }
+        srand(time(nullptr));
         int randomPath = rand()%beatings->legalMoves(pawn_to_move).size();
-        //pawn_to_move->changePosition(beatings->legalMoves(pawn_to_move)[randomPath]]);
-    } /*else if(ai->ai_level == Level::Hard) {
-        
-    }*/
+        pawn_to_move->changePosition(beatings->legalMoves(pawn_to_move)[randomPath].back());
+    } else if(ai->ai_level == Level::Hard) {
+
+    }
 }
