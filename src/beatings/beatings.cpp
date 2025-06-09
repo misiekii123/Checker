@@ -1,5 +1,4 @@
 #include "beatings.h"
-#include "board/board.h"
 
 Beatings::Beatings() {}
 
@@ -7,11 +6,9 @@ bool Beatings::isInsideBoard(int x, int y) {
     return x >= 0 && x < 8 && y >= 0 && y < 8;
 }
 
-std::vector<Vector2> Beatings::whereIsBeatingAvailable(Pawn* pawn) {
+std::vector<Vector2> Beatings::whereIsBeatingAvailable(Pawn* pawn, Board* board) {
     std::vector<Vector2> result;
-    if (!pawn || !pawn->is_alive) return result;
-
-    Board board;
+    if (!pawn || !pawn->is_alive || !board) return result;
 
     int directions[4][2] = { {-1, -1}, {1, -1}, {-1, 1}, {1, 1} };
     Vector2 pos = pawn->getPosition();
@@ -27,11 +24,9 @@ std::vector<Vector2> Beatings::whereIsBeatingAvailable(Pawn* pawn) {
             int endX = gridX + 2 * dx;
             int endY = gridY + 2 * dy;
 
-            if (midX >= 0 && midX < 8 && midY >= 0 && midY < 8 &&
-                endX >= 0 && endX < 8 && endY >= 0 && endY < 8) {
-
-                Pawn* mid = board.board[midY][midX];
-                Pawn* end = board.board[endY][endX];
+            if (isInsideBoard(midX, midY) && isInsideBoard(endX, endY)) {
+                Pawn* mid = board->board[midY][midX];
+                Pawn* end = board->board[endY][endX];
 
                 if (mid && !ColorIsEqual(mid->pawn_color, pawn->pawn_color) && end == nullptr) {
                     result.push_back(Vector2{ static_cast<float>(endX * 100 + 50), static_cast<float>(endY * 100 + 50) });
@@ -47,8 +42,8 @@ std::vector<Vector2> Beatings::whereIsBeatingAvailable(Pawn* pawn) {
             int y = gridY + dy;
             bool enemyFound = false;
 
-            while (x >= 0 && x < 8 && y >= 0 && y < 8) {
-                Pawn* current = board.board[y][x];
+            while (isInsideBoard(x, y)) {
+                Pawn* current = board->board[y][x];
 
                 if (current == nullptr) {
                     if (enemyFound) {
@@ -85,24 +80,20 @@ void Beatings::simulateMultiBeating(Pawn* pawn, std::vector<Vector2> current_pat
         }
     }
 
-    int x = pawn->getPosition().x;
-    int y = pawn->getPosition().y;
+    int gridX = static_cast<int>(pawn->getPosition().x) / 100;
+    int gridY = static_cast<int>(pawn->getPosition().y) / 100;
 
-    simulateMultiBeatingInternal(tempBoard, x, y, current_path, all_paths, pawn->pawn_color);
+    simulateMultiBeatingInternal(tempBoard, gridX, gridY, current_path, all_paths, pawn->pawn_color);
 
     for (int y = 0; y < 8; ++y) {
         for (int x = 0; x < 8; ++x) {
-            if (tempBoard[y][x]) {
-                delete tempBoard[y][x];
-            }
+            delete tempBoard[y][x];
         }
     }
 }
 
-
 void Beatings::simulateMultiBeatingInternal(Pawn* tempBoard[8][8], int x, int y,
-    std::vector<Vector2> current_path, std::vector<std::vector<Vector2>>& all_paths, Color color)
-{
+    std::vector<Vector2> current_path, std::vector<std::vector<Vector2>>& all_paths, Color color) {
     bool beaten = false;
 
     const int dirs[4][2] = { {-1, -1}, {-1, 1}, {1, -1}, {1, 1} };
@@ -124,9 +115,7 @@ void Beatings::simulateMultiBeatingInternal(Pawn* tempBoard[8][8], int x, int y,
             tempBoard[destY][destX] = movingPawn;
 
             std::vector<Vector2> new_path = current_path;
-            Vector2 newPos;
-            newPos.x = destX;
-            newPos.y = destY;
+            Vector2 newPos = { static_cast<float>(destX * 100 + 50), static_cast<float>(destY * 100 + 50) };
             new_path.push_back(newPos);
 
             simulateMultiBeatingInternal(tempBoard, destX, destY, new_path, all_paths, color);
@@ -144,11 +133,10 @@ void Beatings::simulateMultiBeatingInternal(Pawn* tempBoard[8][8], int x, int y,
     }
 }
 
-std::vector<std::vector<Vector2>> Beatings::multipleBeatings(Pawn* pawn) {
+std::vector<std::vector<Vector2>> Beatings::multipleBeatings(Pawn* pawn, Board* board) {
     std::vector<std::vector<Vector2>> all_paths;
     Vector2 start = pawn->getPosition();
     std::vector<Vector2> current_path = { start };
-    Board* board;
 
     simulateMultiBeating(pawn, current_path, all_paths, board);
 
@@ -169,14 +157,13 @@ std::vector<std::vector<Vector2>> Beatings::multipleBeatings(Pawn* pawn) {
     return longest_paths;
 }
 
-std::vector<std::vector<Vector2>> Beatings::legalMoves(Pawn* pawn) {
+std::vector<std::vector<Vector2>> Beatings::legalMoves(Pawn* pawn, Board* board) {
     std::vector<std::vector<Vector2>> result;
-    Board board;
 
-    if (!pawn || !pawn->is_alive) return result;
+    if (!pawn || !pawn->is_alive || board == nullptr) return result;
 
-    if (!whereIsBeatingAvailable(pawn).empty()) {
-        return multipleBeatings(pawn);
+    if (!whereIsBeatingAvailable(pawn, board).empty()) {
+        return multipleBeatings(pawn, board);
     }
 
     Vector2 pos = pawn->getPosition();
@@ -192,12 +179,11 @@ std::vector<std::vector<Vector2>> Beatings::legalMoves(Pawn* pawn) {
             int x = gridX + dx;
             int y = gridY + dy;
 
-            if (x >= 0 && x < 8 && y >= 0 && y < 8 && board.board[y][x] == nullptr) {
+            if (isInsideBoard(x, y) && board->board[y][x] == nullptr) {
                 Vector2 move = Vector2{ static_cast<float>(x * 100 + 50), static_cast<float>(y * 100 + 50) };
                 result.push_back({ pos, move });
             }
         }
-
     } else {
         for (int d = 0; d < 4; ++d) {
             int dx = directions[d][0];
@@ -205,8 +191,8 @@ std::vector<std::vector<Vector2>> Beatings::legalMoves(Pawn* pawn) {
             int x = gridX + dx;
             int y = gridY + dy;
 
-            while (x >= 0 && x < 8 && y >= 0 && y < 8) {
-                if (board.board[y][x] == nullptr) {
+            while (isInsideBoard(x, y)) {
+                if (board->board[y][x] == nullptr) {
                     Vector2 move = Vector2{ static_cast<float>(x * 100 + 50), static_cast<float>(y * 100 + 50) };
                     result.push_back({ pos, move });
                 } else {

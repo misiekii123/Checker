@@ -1,10 +1,16 @@
 #pragma once
 
 #include <raylib.h>
-#include <game/game.h>
-#include <vector>
 #include <time.h>
 #include "beatings/beatings.h"
+#include "pawn/pawn.h"
+#include "board/board.h"
+#include "beatings/beatings.h"
+#include "game/game.h"
+#include <cstdlib>
+#include <ctime>
+#include <climits>
+#include <vector>
 
 enum class Level {
     Easy,
@@ -12,16 +18,12 @@ enum class Level {
 };
 
 class Ai {
-    private:
-        Level ai_level;
-        int number_of_pawns = 12;
-    public:
-        int countPawns(Pawn* board[8][8]);
-        void freeBoard(Pawn** board[8][8]);
-        Pawn** copyBoard(Pawn* src[8][8]);
-        int evaluateBoard(Pawn* board[8][8]);
-        Pawn* chooseRandomPawn(Pawn* board[8][8], Ai* ai);
-        int minimax(Pawn* board[8][8], int depth, bool maximizingPlayer);
-        void move(Pawn* pawn, Ai* ai);
-        std::vector<std::pair<Pawn**, std::pair<int, int>>> generateMoves(Pawn* board[8][8], Color playerColor);
+public:
+    Level ai_level;
+    int number_of_pawns = 0;
+
+    int evaluateBoard(Pawn* board[8][8]);
+    int countPawns(Pawn* board[8][8]);
+    Pawn* chooseRandomPawn(Pawn* board[8][8], Ai* ai);
+    void move(Pawn* pawn, Ai* ai, Board* board);
 };
