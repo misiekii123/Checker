@@ -35,9 +35,34 @@ Pawn* Ai::chooseRandomPawn(Pawn* board[8][8], Ai* ai) {
     return nullptr;
 }
 
+int Ai::evaluateBoard(Pawn* board[8][8]) {
+    int score = 0;
+    Beatings beatings;
+
+    for(int row = 0; row < 8; ++row) {
+        for(int col = 0; col < 8; ++col) {
+            if(board[row][col]->is_alive && !ColorIsEqual(board[row][col]->pawn_color, BLACK) && !board[row][col]->is_queen) {
+                score -= 1;
+                score -= 0.25 * beatings.legalMoves(board[row][col]).size();
+            } else if(board[row][col]->is_alive && !ColorIsEqual(board[row][col]->pawn_color, BLACK) && board[row][col]->is_queen) {
+                score -= 2;
+                score -= 0.25 * beatings.legalMoves(board[row][col]).size();
+            } else if(board[row][col]->is_alive && ColorIsEqual(board[row][col]->pawn_color, BLACK) && !board[row][col]->is_queen) {
+                score += 1;
+                score += 0.25 * beatings.legalMoves(board[row][col]).size();
+            } else if(board[row][col]->is_alive && ColorIsEqual(board[row][col]->pawn_color, BLACK) && board[row][col]->is_queen) {
+                score += 2;
+                score += 0.25 * beatings.legalMoves(board[row][col]).size();
+            }
+        }
+    }
+
+    return score;
+}
+
 
 int Ai::minimax(Pawn* pawn, Pawn* board[8][8]) {
-    //TODO
+    
 }
 
 void Ai::move(Pawn* pawn, Ai* ai) {

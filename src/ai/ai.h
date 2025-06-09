@@ -16,7 +16,7 @@ class Ai {
         int number_of_pawns = 12;
     public:
         void copyBoard(Pawn* src[8][8], Pawn* dest[8][8]);
-        //int evaluatePawn();
+        int evaluateBoard(Pawn* board[8][8]);
         Pawn* chooseRandomPawn(Pawn* board[8][8], Ai* ai);
         int minimax(Pawn* pawn, Pawn* board[8][8]);
         void move(Pawn* pawn, Ai* ai);
