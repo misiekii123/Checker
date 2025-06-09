@@ -160,10 +160,11 @@ std::vector<std::vector<Vector2>> Beatings::multipleBeatings(Pawn* pawn, Board* 
 std::vector<std::vector<Vector2>> Beatings::legalMoves(Pawn* pawn, Board* board) {
     std::vector<std::vector<Vector2>> result;
 
-    if (!pawn || !pawn->is_alive || board == nullptr) return result;
+    if (!pawn || !pawn->is_alive || !board) return result;
 
-    if (!whereIsBeatingAvailable(pawn, board).empty()) {
-        return multipleBeatings(pawn, board);
+    std::vector<std::vector<Vector2>> beatings = multipleBeatings(pawn, board);
+    if (!beatings.empty()) {
+        return beatings;
     }
 
     Vector2 pos = pawn->getPosition();
