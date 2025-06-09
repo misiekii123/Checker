@@ -18,17 +18,17 @@ void Game::startGame() {
     board.fillPawns();
 }
 
-void Game::mainLoop(Beatings* beatings) {
+void Game::mainLoop() {
     Board board;
     switch (currentState) {
         case GameState::InGame:
             board.drawBoard();
             board.drawPawns();
-            mouseControl(beatings);
+            mouseControl();
             if (pawn_selected && selectedPawn) {
                 drawPawnSelection(selectedPawn);
-                drawAwailableBeating(beatings->whereIsBeatingAvailable(selectedPawn));
-                drawAwailableMoves(beatings->legalMoves(selectedPawn));
+                drawAwailableBeating(this->beatings.whereIsBeatingAvailable(selectedPawn));
+                drawAwailableMoves(this->beatings.legalMoves(selectedPawn));
             }
             if (IsKeyPressed(KEY_ESCAPE)) {
                 changeGameState(GameState::InPause);
@@ -58,7 +58,7 @@ void Game::drawPawnSelection(Pawn* pawn) {
 }
 
 
-void Game::mouseControl(Beatings* beatings) {
+void Game::mouseControl() {
     Board board;
     if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
         Vector2 mousePos = GetMousePosition();
@@ -74,7 +74,7 @@ void Game::mouseControl(Beatings* beatings) {
             }
 
             else if (pawn_selected && clickedPawn == nullptr) {
-                std::vector<std::vector<Vector2>> availableMoves = beatings->legalMoves(selectedPawn);
+                std::vector<std::vector<Vector2>> availableMoves = this->beatings.legalMoves(selectedPawn);
 
                 for (const auto& move : availableMoves) {
                     if (move.size() == 2) {
@@ -102,7 +102,7 @@ void Game::mouseControl(Beatings* beatings) {
                     }
                 }
 
-                for (const auto& move : beatings->whereIsBeatingAvailable(selectedPawn)) {
+                for (const auto& move : this->beatings.whereIsBeatingAvailable(selectedPawn)) {
                     int moveGridX = static_cast<int>(move.x) / 100;
                     int moveGridY = static_cast<int>(move.y) / 100;
 

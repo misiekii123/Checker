@@ -2,7 +2,6 @@
 #include "raylib.h"
 #include <iostream>
 #include "game/game.h"
-#include "beatings/beatings.h"
 
 int main() {
     const int screenWidth = 800;
@@ -11,7 +10,6 @@ int main() {
     InitWindow(screenWidth, screenHeight, "Checker");
 
     Game game;
-    Beatings* beatings;
 
     SetTargetFPS(60);
     SetExitKey(0);
@@ -20,7 +18,7 @@ int main() {
 
         BeginDrawing();
         ClearBackground(BLACK);
-        game.mainLoop(beatings);
+        game.mainLoop();
         EndDrawing();
     }
 

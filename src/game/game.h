@@ -19,7 +19,7 @@ private:
     Pawn* selectedPawn = nullptr;
     Color player_color = WHITE; 
     Color enemy_color = BLACK;
-    void mouseControl(Beatings* beatings);
+    void mouseControl();
     void drawPawnSelection(Pawn* pawn);
     void drawAwailableBeating(std::vector<Vector2> availableBeating);
     void drawAwailableMoves(std::vector<std::vector<Vector2>> availableMoves);    
@@ -27,7 +27,7 @@ private:
 public:
     void changeGameState(GameState newState);
     void startGame();
-    void mainLoop(Beatings* beatings);
+    void mainLoop();
     Game();
     
 };
