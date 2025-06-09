@@ -3,6 +3,7 @@
 #include <raylib.h>
 #include <game/game.h>
 #include <vector>
+#include <time.h>
 #include "beatings/beatings.h"
 
 enum class Level {
