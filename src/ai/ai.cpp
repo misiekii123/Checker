@@ -1,9 +1,11 @@
 #include "ai.h"
 
+Ai::Ai() {
+    this->beatings = Beatings();
+}
 
 int Ai::evaluateBoard(Pawn* board[8][8]) {
     int score = 0;
-    Beatings beatings;
 
     for(int row = 0; row < 8; ++row) {
         for(int col = 0; col < 8; ++col) {
@@ -39,11 +41,11 @@ int Ai::countPawns(Pawn* board[8][8]) {
     return pawns;
 }
 
-Pawn* Ai::chooseRandomPawn(Pawn* board[8][8], Ai* ai) {
-    ai->number_of_pawns = countPawns(board);
-    if (ai->number_of_pawns == 0) return nullptr;
+Pawn* Ai::chooseRandomPawn(Pawn* board[8][8]) {
+    this->number_of_pawns = countPawns(board);
+    if (this->number_of_pawns == 0) return nullptr;
     srand(static_cast<unsigned int>(time(nullptr)));
-    int choosedPawn = rand() % ai->number_of_pawns;
+    int choosedPawn = rand() % this->number_of_pawns;
     int actPawn = 0;
 
     for (int row = 7; row >= 0; --row) {
@@ -61,13 +63,12 @@ Pawn* Ai::chooseRandomPawn(Pawn* board[8][8], Ai* ai) {
     return nullptr;
 }
 
-void Ai::move(Pawn* pawn, Ai* ai, Board* board) {
-    Beatings beatings;
+void Ai::move(Board* board) {
     Pawn* pawn_to_move = nullptr;
 
-    if(ai->ai_level == Level::Easy) {
+    if(this->ai_level == Level::Easy) {
         do {
-            pawn_to_move = chooseRandomPawn(board->board, ai);
+            pawn_to_move = chooseRandomPawn(board->board);
             if (!pawn_to_move) return;
         } while(beatings.legalMoves(pawn_to_move, board).empty());
 
@@ -75,9 +76,16 @@ void Ai::move(Pawn* pawn, Ai* ai, Board* board) {
         auto moves = beatings.legalMoves(pawn_to_move, board);
         int randomPath = rand() % moves.size();
         Vector2 movePos = moves[randomPath].back();
+
+        int oldX = static_cast<int>(pawn_to_move->getPosition().x) / 100;
+        int oldY = static_cast<int>(pawn_to_move->getPosition().y) / 100;
+        int newX = static_cast<int>(movePos.x) / 100;
+        int newY = static_cast<int>(movePos.y) / 100;
+        board->board[oldY][oldX] = nullptr;
+        board->board[newY][newX] = pawn_to_move;
         pawn_to_move->changePosition(movePos);
 
-    } else if(ai->ai_level == Level::Hard) {
+    } else if(this->ai_level == Level::Hard) {
         int bestScore = INT_MIN;
         Pawn* bestPawn = nullptr;
         std::vector<Vector2> bestMove;
@@ -99,6 +107,13 @@ void Ai::move(Pawn* pawn, Ai* ai, Board* board) {
                         Pawn* simPawn = boardCopy[curY][curX];
 
                         Vector2 newPos = move.back();
+
+                        int simOldX = curX;
+                        int simOldY = curY;
+                        int simNewX = static_cast<int>(newPos.x) / 100;
+                        int simNewY = static_cast<int>(newPos.y) / 100;
+                        boardCopy[simOldY][simOldX] = nullptr;
+                        boardCopy[simNewY][simNewX] = simPawn;
                         simPawn->changePosition(newPos);
 
                         int score = evaluateBoard(boardCopy);
@@ -117,8 +132,18 @@ void Ai::move(Pawn* pawn, Ai* ai, Board* board) {
             }
         }
 
-        if (bestPawn && !bestMove.empty()) {
-            bestPawn->changePosition(bestMove.back());
+        if (!bestPawn || bestMove.empty()) {
+            std::cout << "AI could not find a valid move!" << std::endl;
+            return;
         }
+
+        int oldX = static_cast<int>(bestPawn->getPosition().x) / 100;
+        int oldY = static_cast<int>(bestPawn->getPosition().y) / 100;
+        int newX = static_cast<int>(bestMove.back().x) / 100;
+        int newY = static_cast<int>(bestMove.back().y) / 100;
+
+        board->board[oldY][oldX] = nullptr;
+        board->board[newY][newX] = bestPawn;
+        bestPawn->changePosition(bestMove.back());
     }
 }

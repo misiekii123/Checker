@@ -34,7 +34,8 @@ void Game::mainLoop() {
                 drawAwailableMoves(this->beatings.legalMoves(selectedPawn, &board));
             }
             if (playerTurn == Player::AI) {
-                ai.move(nullptr, &ai, &board);
+                std::cout << "AI's turn" << std::endl;
+                ai.move(&board);
                 playerTurn = Player::Human;
             }
             if (IsKeyPressed(KEY_ESCAPE)) {
@@ -76,6 +77,7 @@ void Game::mouseControl() {
             if (pawn_selected && clickedPawn == selectedPawn) {
                 selectedPawn = nullptr;
                 pawn_selected = false;
+                playerTurn = Player::AI;
             }
 
             else if (pawn_selected && clickedPawn == nullptr) {
@@ -96,6 +98,7 @@ void Game::mouseControl() {
                             }
                             selectedPawn = nullptr;
                             pawn_selected = false;
+                            playerTurn = Player::AI;
                             return;
                         }
                     }
@@ -111,7 +114,6 @@ void Game::mouseControl() {
                         Pawn* midPawn = board.board[(oldY + gridY) / 2][(oldX + gridX) / 2];
                         if (midPawn) {
                             midPawn->is_alive = false;
-                            delete midPawn;
                             board.board[(oldY + gridY) / 2][(oldX + gridX) / 2] = nullptr;
                         }
                         board.board[oldY][oldX] = nullptr;
@@ -122,6 +124,7 @@ void Game::mouseControl() {
                         }
                         selectedPawn = nullptr;
                         pawn_selected = false;
+                        playerTurn = Player::AI;
                         return;
                     }
                 }

@@ -9,6 +9,7 @@
 #include <ctime>
 #include <climits>
 #include <vector>
+#include <iostream>
 
 enum class Level {
     Easy,
@@ -16,12 +17,15 @@ enum class Level {
 };
 
 class Ai {
+private:
+    Beatings beatings;
 public:
     Level ai_level;
     int number_of_pawns = 0;
 
     int evaluateBoard(Pawn* board[8][8]);
     int countPawns(Pawn* board[8][8]);
-    Pawn* chooseRandomPawn(Pawn* board[8][8], Ai* ai);
-    void move(Pawn* pawn, Ai* ai, Board* board);
+    Pawn* chooseRandomPawn(Pawn* board[8][8]);
+    void move(Board* board);
+    Ai();
 };
