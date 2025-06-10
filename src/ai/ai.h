@@ -23,9 +23,9 @@ public:
     Level ai_level;
     int number_of_pawns = 0;
 
-    int evaluateBoard(Pawn* board[8][8]);
-    int countPawns(Pawn* board[8][8]);
-    Pawn* chooseRandomPawn(Pawn* board[8][8]);
+    int evaluateBoard(Board* board);
+    int countPawns(Board* board);
+    Pawn* chooseRandomPawn(Board* board);
     void move(Board* board);
     Ai();
 };

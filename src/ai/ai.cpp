@@ -4,12 +4,12 @@ Ai::Ai() {
     this->beatings = Beatings();
 }
 
-int Ai::evaluateBoard(Pawn* board[8][8]) {
+int Ai::evaluateBoard(Board* board) {
     int score = 0;
 
     for(int row = 0; row < 8; ++row) {
         for(int col = 0; col < 8; ++col) {
-            Pawn* pawn = board[row][col];
+            Pawn* pawn = board->board[row][col];
             if (!pawn || !pawn->is_alive) continue;
 
             bool isBlack = ColorIsEqual(pawn->pawn_color, BLACK);
@@ -28,11 +28,11 @@ int Ai::evaluateBoard(Pawn* board[8][8]) {
     return score;
 }
 
-int Ai::countPawns(Pawn* board[8][8]) {
+int Ai::countPawns(Board* board) {
     int pawns = 0;
     for(int row = 0; row < 8; ++row) {
         for(int col = 0; col < 8; ++col) {
-            Pawn* p = board[row][col];
+            Pawn* p = board->board[row][col];
             if(p && p->is_alive && ColorIsEqual(p->pawn_color, BLACK)) {
                 pawns++;
             }
@@ -41,7 +41,7 @@ int Ai::countPawns(Pawn* board[8][8]) {
     return pawns;
 }
 
-Pawn* Ai::chooseRandomPawn(Pawn* board[8][8]) {
+Pawn* Ai::chooseRandomPawn(Board* board) {
     this->number_of_pawns = countPawns(board);
     if (this->number_of_pawns == 0) return nullptr;
     srand(static_cast<unsigned int>(time(nullptr)));
@@ -50,7 +50,7 @@ Pawn* Ai::chooseRandomPawn(Pawn* board[8][8]) {
 
     for (int row = 7; row >= 0; --row) {
         for (int col = 7; col >= 0; --col) {
-            Pawn* current = board[row][col];
+            Pawn* current = board->board[row][col];
             if (current && current->is_alive && ColorIsEqual(current->pawn_color, BLACK)) {
                 if (actPawn == choosedPawn) {
                     return current;
@@ -68,7 +68,7 @@ void Ai::move(Board* board) {
 
     if(this->ai_level == Level::Easy) {
         do {
-            pawn_to_move = chooseRandomPawn(board->board);
+            pawn_to_move = chooseRandomPawn(board);
             if (!pawn_to_move) return;
         } while(beatings.legalMoves(pawn_to_move, board).empty());
 
@@ -116,7 +116,11 @@ void Ai::move(Board* board) {
                         boardCopy[simNewY][simNewX] = simPawn;
                         simPawn->changePosition(newPos);
 
-                        int score = evaluateBoard(boardCopy);
+                        Board tempBoard;
+                        for(int r = 0; r < 8; ++r)
+                            for(int c = 0; c < 8; ++c)
+                                tempBoard.board[r][c] = boardCopy[r][c];
+                        int score = evaluateBoard(&tempBoard);
 
                         if (score > bestScore) {
                             bestScore = score;
