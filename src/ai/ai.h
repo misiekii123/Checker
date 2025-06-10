@@ -5,8 +5,6 @@
 #include "beatings/beatings.h"
 #include "pawn/pawn.h"
 #include "board/board.h"
-#include "beatings/beatings.h"
-#include "game/game.h"
 #include <cstdlib>
 #include <ctime>
 #include <climits>
