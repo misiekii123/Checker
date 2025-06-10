@@ -5,8 +5,12 @@
 
 Game::Game() {
     currentState = GameState::InMenu;
+    playerTurn = Player::Human;
     this->board = Board(Vector2{8, 8});
     this->beatings = Beatings();
+    this->ui = Ui();
+    this->ai = Ai();
+    ai.ai_level = Level::Hard;
 }
 
 void Game::changeGameState(GameState newState) {
@@ -28,6 +32,10 @@ void Game::mainLoop() {
                 drawPawnSelection(selectedPawn);
                 drawAwailableBeating(this->beatings.whereIsBeatingAvailable(selectedPawn, &board));
                 drawAwailableMoves(this->beatings.legalMoves(selectedPawn, &board));
+            }
+            if (playerTurn == Player::AI) {
+                ai.move(nullptr, &ai, &board);
+                playerTurn = Player::Human;
             }
             if (IsKeyPressed(KEY_ESCAPE)) {
                 changeGameState(GameState::InPause);

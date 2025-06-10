@@ -8,13 +8,21 @@
 #include <board/board.h>
 #include <vector>
 #include <utils/utils.h>
+#include <ai/ai.h>
+
+enum class Player {
+    Human,
+    AI
+};
 
 class Game {
 private:
     GameState currentState;
     Beatings beatings;
     Ui ui;
+    Ai ai;
     Board board;
+    Player playerTurn;
     bool pawn_selected = false;
     Pawn* selectedPawn = nullptr;
     Color player_color = WHITE; 
