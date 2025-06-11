@@ -19,7 +19,9 @@ enum class Level {
 class Ai {
 private:
     Beatings beatings;
+    int evaluateBoard(const Board& board);
 public:
+    Level ai_level;
     void move(Board& board);
     Ai();
 };

@@ -10,7 +10,7 @@ Game::Game() {
     this->beatings = Beatings();
     this->ui = Ui();
     this->ai = Ai();
-    // ai.ai_level = Level::Hard;
+    ai.ai_level = Level::Easy;
 }
 
 void Game::changeGameState(GameState newState) {
