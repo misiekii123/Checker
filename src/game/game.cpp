@@ -1,6 +1,4 @@
 #include "game.h"
-#include <math.h>
-#include "beatings/beatings.h"
 
 Game::Game() {
     currentState = GameState::InMenu;
@@ -126,7 +124,8 @@ void Game::mouseControl() {
                             if (gameMode == GameMode::MultiPlayer) {
                                 if (playerTurn == Player::Player) {
                                     playerTurn = Player::Enemy;
-                                } else {
+                                } 
+                                else {
                                     playerTurn = Player::Player;
                                 }
                             }
@@ -182,14 +181,14 @@ void Game::mouseControl() {
 
                         if (gameMode == GameMode::MultiPlayer) {
                             playerTurn = (playerTurn == Player::Player) ? Player::Enemy : Player::Player;
-                        } else {
+                        } 
+                        else {
                             playerTurn = Player::Enemy;
                         }
 
                         return;
                     }
                 }
-
             }
 
             else if (clickedPawn && clickedPawn->is_alive) {
