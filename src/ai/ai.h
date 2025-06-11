@@ -20,12 +20,6 @@ class Ai {
 private:
     Beatings beatings;
 public:
-    Level ai_level;
-    int number_of_pawns = 0;
-
-    int evaluateBoard(Board& board);
-    int countPawns(Board& board);
-    Pawn* chooseRandomPawn(Board& board);
     void move(Board& board);
     Ai();
 };
