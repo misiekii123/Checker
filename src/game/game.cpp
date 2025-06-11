@@ -71,6 +71,7 @@ void Game::mainLoop() {
             }
             else if (IsKeyPressed(KEY_ESCAPE)) {
                 CloseWindow();
+                exit(0);
             }
             break;
         case GameState::InPause:
