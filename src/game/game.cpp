@@ -4,7 +4,6 @@
 
 Game::Game() {
     currentState = GameState::InMenu;
-    playerTurn = Player::Human;
     this->board = Board(Vector2{8, 8});
     this->beatings = Beatings();
     this->ui = Ui();
@@ -19,6 +18,7 @@ void Game::changeGameState(GameState newState) {
 void Game::startGame() {
     changeGameState(GameState::InGame);
     board.fillPawns();
+    playerTurn = Player::Human;
 }
 
 void Game::mainLoop() {
@@ -57,7 +57,10 @@ void Game::mainLoop() {
         case GameState::InPause:
             ui.drawPauseMenu();
             if (IsKeyPressed(KEY_ENTER)) {
-                startGame();
+                currentState = GameState::InGame;
+            }
+            else if (IsKeyPressed(KEY_ESCAPE)) {
+                changeGameState(GameState::InMenu);
             }
             break;
     }
