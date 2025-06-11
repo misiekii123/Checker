@@ -36,10 +36,11 @@ private:
     void drawAwailableMoves(std::vector<std::vector<Vector2>> availableMoves);    
     bool isInsideBoard(int x, int y);
     bool isFinished(Color color);
+    Pawn* pawnHasBeatingAvailable(Color color);
+    bool anyPawnHasBeating(Color color);
 public:
     void changeGameState(GameState newState);
     void startGame();
     void mainLoop();
     Game();
-    
 };

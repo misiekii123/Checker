@@ -28,6 +28,16 @@ void Game::mainLoop() {
         case GameState::InGame:
             board.drawBoard();
             board.drawPawns();
+            if (!pawn_selected) {
+                Color currentPlayerColor = (playerTurn == Player::Player) ? player_color : enemy_color;
+                if (anyPawnHasBeating(currentPlayerColor)) {
+                    Pawn* forced = pawnHasBeatingAvailable(currentPlayerColor);
+                    if (forced) {
+                        selectedPawn = forced;
+                        pawn_selected = true;
+                    }
+                }
+            }
             mouseControl();
             if (is_finished) {
                 currentState = GameState::InGameOver;
@@ -104,35 +114,32 @@ void Game::mouseControl() {
             }
 
             else if (pawn_selected && clickedPawn == nullptr) {
-                std::vector<std::vector<Vector2>> availableMoves = this->beatings.legalMoves(selectedPawn, &board);
-                for (const auto& move : availableMoves) {
-                    if (move.size() == 2) {
-                        int moveGridX = static_cast<int>(move[1].x) / 100;
-                        int moveGridY = static_cast<int>(move[1].y) / 100;
-                        if (moveGridX == gridX && moveGridY == gridY) {
-                            Vector2 newPos = move[1];
-                            int oldX = static_cast<int>(selectedPawn->getPosition().x) / 100;
-                            int oldY = static_cast<int>(selectedPawn->getPosition().y) / 100;
-                            board.board[oldY][oldX] = nullptr;
-                            board.board[gridY][gridX] = selectedPawn;
-                            selectedPawn->changePosition(newPos);
-                            if (!selectedPawn->is_queen && (gridY == 0 || gridY == 7)) {
-                                selectedPawn->is_queen = true;
-                            }
-                            selectedPawn = nullptr;
-                            pawn_selected = false;
-                            if (gameMode == GameMode::MultiPlayer) {
-                                if (playerTurn == Player::Player) {
-                                    playerTurn = Player::Enemy;
-                                } 
-                                else {
-                                    playerTurn = Player::Player;
+                if (!anyPawnHasBeating(selectedPawn->pawn_color)) {
+                    std::vector<std::vector<Vector2>> availableMoves = this->beatings.legalMoves(selectedPawn, &board);
+                    for (const auto& move : availableMoves) {
+                        if (move.size() == 2) {
+                            int moveGridX = static_cast<int>(move[1].x) / 100;
+                            int moveGridY = static_cast<int>(move[1].y) / 100;
+                            if (moveGridX == gridX && moveGridY == gridY) {
+                                Vector2 newPos = move[1];
+                                int oldX = static_cast<int>(selectedPawn->getPosition().x) / 100;
+                                int oldY = static_cast<int>(selectedPawn->getPosition().y) / 100;
+                                board.board[oldY][oldX] = nullptr;
+                                board.board[gridY][gridX] = selectedPawn;
+                                selectedPawn->changePosition(newPos);
+                                if (!selectedPawn->is_queen && (gridY == 0 || gridY == 7)) {
+                                    selectedPawn->is_queen = true;
                                 }
+                                selectedPawn = nullptr;
+                                pawn_selected = false;
+                                if (gameMode == GameMode::MultiPlayer) {
+                                    playerTurn = (playerTurn == Player::Player) ? Player::Enemy : Player::Player;
+                                }
+                                else {
+                                    playerTurn = Player::Enemy;
+                                }
+                                return;
                             }
-                            else {
-                                playerTurn = Player::Enemy;
-                            }
-                            return;
                         }
                     }
                 }
@@ -159,7 +166,6 @@ void Game::mouseControl() {
                             if (midPawn && midPawn->is_alive && !ColorIsEqual(midPawn->pawn_color, selectedPawn->pawn_color)) {
                                 winning_color = selectedPawn->pawn_color;
                                 is_finished = isFinished(midPawn->pawn_color);
-
                                 midPawn->is_alive = false;
                                 board.board[y][x] = nullptr;
                                 break;
@@ -176,12 +182,17 @@ void Game::mouseControl() {
                             selectedPawn->is_queen = true;
                         }
 
+                        if (!beatings.whereIsBeatingAvailable(selectedPawn, &board).empty()) {
+                            pawn_selected = true;
+                            return;
+                        }
+
                         selectedPawn = nullptr;
                         pawn_selected = false;
 
                         if (gameMode == GameMode::MultiPlayer) {
                             playerTurn = (playerTurn == Player::Player) ? Player::Enemy : Player::Player;
-                        } 
+                        }
                         else {
                             playerTurn = Player::Enemy;
                         }
@@ -191,22 +202,36 @@ void Game::mouseControl() {
                 }
             }
 
+
             else if (clickedPawn && clickedPawn->is_alive) {
-                if (gameMode == GameMode::SinglePlayer && !ColorIsEqual(clickedPawn->pawn_color, player_color)) {
+                Color currentPlayerColor = (playerTurn == Player::Player) ? player_color : enemy_color;
+
+                if (!ColorIsEqual(clickedPawn->pawn_color, currentPlayerColor)) {
                     selectedPawn = nullptr;
                     pawn_selected = false;
+                    return;
                 }
-                else {
-                    Color currentPlayerColor = (playerTurn == Player::Player) ? player_color : enemy_color;
-                    if (!ColorIsEqual(clickedPawn->pawn_color, currentPlayerColor)) {
-                        selectedPawn = nullptr;
-                        pawn_selected = false;
-                        return;
+
+                if (anyPawnHasBeating(currentPlayerColor)) {
+                    if (!beatings.whereIsBeatingAvailable(clickedPawn, &board).empty()) {
+                        selectedPawn = clickedPawn;
+                        pawn_selected = true;
+                    } else {
+                        Pawn* forced = pawnHasBeatingAvailable(currentPlayerColor);
+                        if (forced) {
+                            selectedPawn = forced;
+                            pawn_selected = true;
+                        } else {
+                            selectedPawn = nullptr;
+                            pawn_selected = false;
+                        }
                     }
+                } else {
                     selectedPawn = clickedPawn;
                     pawn_selected = true;
                 }
             }
+
 
             else {
                 selectedPawn = nullptr;
@@ -245,4 +270,32 @@ bool Game::isFinished(Color color) {
         }
     }
     return true;
+}
+
+Pawn* Game::pawnHasBeatingAvailable(Color color) {
+    for (int row = 0; row < 8; ++row) {
+        for (int col = 0; col < 8; ++col) {
+            Pawn* pawn = board.board[row][col];
+            if (pawn && pawn->is_alive && ColorIsEqual(pawn->pawn_color, color)) {
+                if (!beatings.whereIsBeatingAvailable(pawn, &board).empty()) {
+                    return pawn;
+                }
+            }
+        }
+    }
+    return nullptr;
+}
+
+bool Game::anyPawnHasBeating(Color color) {
+    for (int row = 0; row < 8; ++row) {
+        for (int col = 0; col < 8; ++col) {
+            Pawn* pawn = board.board[row][col];
+            if (pawn && pawn->is_alive && ColorIsEqual(pawn->pawn_color, color)) {
+                if (!beatings.whereIsBeatingAvailable(pawn, &board).empty()) {
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
 }
