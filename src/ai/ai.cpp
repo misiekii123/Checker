@@ -37,10 +37,21 @@ void Ai::move(Board& board) {
             int newX = static_cast<int>(newPos.x) / 100;
             int newY = static_cast<int>(newPos.y) / 100;
 
-            Pawn* midPawn = board.board[(oldY + newY) / 2][(oldX + newX) / 2];
-            if (midPawn) {
-                midPawn->is_alive = false;
-                board.board[(oldY + newY) / 2][(oldX + newX) / 2] = nullptr;
+            int dx = (newX - oldX) > 0 ? 1 : -1;
+            int dy = (newY - oldY) > 0 ? 1 : -1;
+
+            int x = oldX + dx;
+            int y = oldY + dy;
+
+            while (x != newX && y != newY) {
+                Pawn* midPawn = board.board[y][x];
+                if (midPawn && midPawn->is_alive && !ColorIsEqual(midPawn->pawn_color, pawn->pawn_color)) {
+                    midPawn->is_alive = false;
+                    board.board[y][x] = nullptr;
+                    break;
+                }
+                x += dx;
+                y += dy;
             }
 
             board.board[oldY][oldX] = nullptr;
