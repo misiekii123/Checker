@@ -18,7 +18,7 @@ void Game::changeGameState(GameState newState) {
 void Game::startGame() {
     changeGameState(GameState::InGame);
     board.fillPawns();
-    playerTurn = Player::Human;
+    playerTurn = Player::Player;
     is_finished = false;
     pawn_selected = false;
     selectedPawn = nullptr;
@@ -39,10 +39,10 @@ void Game::mainLoop() {
                 drawAwailableBeating(this->beatings.whereIsBeatingAvailable(selectedPawn, &board));
                 drawAwailableMoves(this->beatings.legalMoves(selectedPawn, &board));
             }
-            if (playerTurn == Player::AI && gameMode == GameMode::SinglePlayer) {
+            if (playerTurn == Player::Enemy && gameMode == GameMode::SinglePlayer) {
                 ai.move(board);
                 is_finished = isFinished(enemy_color);
-                playerTurn = Player::Human;
+                playerTurn = Player::Player;
             }
             if (IsKeyPressed(KEY_ESCAPE)) {
                 changeGameState(GameState::InPause);
@@ -120,7 +120,16 @@ void Game::mouseControl() {
                             }
                             selectedPawn = nullptr;
                             pawn_selected = false;
-                            playerTurn = Player::AI;
+                            if (gameMode == GameMode::MultiPlayer) {
+                                if (playerTurn == Player::Player) {
+                                    playerTurn = Player::Enemy;
+                                } else {
+                                    playerTurn = Player::Player;
+                                }
+                            }
+                            else {
+                                playerTurn = Player::Enemy;
+                            }
                             return;
                         }
                     }
@@ -148,7 +157,17 @@ void Game::mouseControl() {
                         }
                         selectedPawn = nullptr;
                         pawn_selected = false;
-                        playerTurn = Player::AI;
+                        if (gameMode == GameMode::MultiPlayer) {
+                            if (playerTurn == Player::Player) {
+                                playerTurn = Player::Enemy;
+                            } else {
+                                playerTurn = Player::Player;
+                            }
+                        }
+                        else {
+                            playerTurn = Player::Enemy;
+                        }
+                        
                         return;
                     }
                 }
@@ -160,6 +179,12 @@ void Game::mouseControl() {
                     pawn_selected = false;
                 }
                 else {
+                    Color currentPlayerColor = (playerTurn == Player::Player) ? player_color : enemy_color;
+                    if (!ColorIsEqual(clickedPawn->pawn_color, currentPlayerColor)) {
+                        selectedPawn = nullptr;
+                        pawn_selected = false;
+                        return;
+                    }
                     selectedPawn = clickedPawn;
                     pawn_selected = true;
                 }

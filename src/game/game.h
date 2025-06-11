@@ -11,8 +11,8 @@
 #include <ai/ai.h>
 
 enum class Player {
-    Human,
-    AI
+    Player,
+    Enemy
 };
 
 class Game {
