@@ -9,16 +9,25 @@ int Ai::evaluateBoard(Board& board) {
 
     for(int row = 0; row < 8; ++row) {
         for(int col = 0; col < 8; ++col) {
+            std::cout << "Evaluating pawn at: " << col << " " << row << std::endl;
             Pawn* pawn = board.board[row][col];
             if (!pawn || !pawn->is_alive) continue;
 
             bool isBlack = ColorIsEqual(pawn->pawn_color, BLACK);
             int value = pawn->is_queen ? 2 : 1;
-            auto moves = beatings.legalMoves(pawn, nullptr);
+            std::vector<std::vector<Vector2>> moves;
+            try {
+                moves = beatings.legalMoves(pawn, &board);
+                std::cout << "Moves found: " << moves.size() << std::endl;
+            } catch (...) {
+                moves.clear();
+            }
             int mobility = 0;
             for (const auto& path : moves) {
                 mobility += (path.size() - 1);
             }
+
+            std::cout << "Mobility for pawn at " << col << " " << row << ": " << mobility << std::endl;
 
             int sign = isBlack ? 1 : -1;
             score += sign * (value + 0.25 * mobility);
@@ -89,38 +98,42 @@ void Ai::move(Board& board) {
         int bestScore = INT_MIN;
         Pawn* bestPawn = nullptr;
         std::vector<Vector2> bestMove;
-        Pawn* boardCopy[8][8];
+        Board boardCopy;
+        std::cout << "Variable loaded" << std::endl;
 
         for(int row = 0; row < 8; ++row) {
             for(int col = 0; col < 8; ++col) {
                 Pawn* current = board.board[row][col];
+                std::cout << "Current pawn loaded: " << col << " " << row << std::endl;
                 if (current && current->is_alive && ColorIsEqual(current->pawn_color, BLACK)) {
                     auto moves = beatings.legalMoves(current, &board);
+                    std::cout << "Moves loaded: " << moves.size() << std::endl;
 
                     for (const auto& move : moves) {
                         for(int r = 0; r < 8; ++r)
                             for(int c = 0; c < 8; ++c)
-                                boardCopy[r][c] = board.board[r][c] ? new Pawn(*board.board[r][c]) : nullptr;
+                                boardCopy.board[r][c] = board.board[r][c] ? new Pawn(*board.board[r][c]) : nullptr;
 
+                        std::cout << "Board copy created" << std::endl;
                         int curX = static_cast<int>(current->getPosition().x) / 100;
                         int curY = static_cast<int>(current->getPosition().y) / 100;
-                        Pawn* simPawn = boardCopy[curY][curX];
-
+                        Pawn* simPawn = boardCopy.board[curY][curX];
+                        
+                        std::cout << "Simulated pawn created: " << col << " " << row << std::endl;
                         Vector2 newPos = move.back();
 
                         int simOldX = curX;
                         int simOldY = curY;
                         int simNewX = static_cast<int>(newPos.x) / 100;
                         int simNewY = static_cast<int>(newPos.y) / 100;
-                        boardCopy[simOldY][simOldX] = nullptr;
-                        boardCopy[simNewY][simNewX] = simPawn;
-                        simPawn->changePosition(newPos);
+                        boardCopy.board[simOldY][simOldX] = nullptr;
+                        boardCopy.board[simNewY][simNewX] = simPawn;
+                        if (simPawn) simPawn->changePosition(newPos);
 
-                        Board tempBoard;
-                        for(int r = 0; r < 8; ++r)
-                            for(int c = 0; c < 8; ++c)
-                                tempBoard.board[r][c] = boardCopy[r][c];
-                        int score = evaluateBoard(tempBoard);
+                        std::cout << "Simulated pawn moved: " << simNewX << " " << simNewY << std::endl;
+                        int score = evaluateBoard(boardCopy);
+
+                        std::cout << "Score calculated: " << score << std::endl;
 
                         if (score > bestScore) {
                             bestScore = score;
@@ -128,13 +141,19 @@ void Ai::move(Board& board) {
                             bestMove = move;
                         }
 
-                        for(int r = 0; r < 8; ++r)
-                            for(int c = 0; c < 8; ++c)
-                                delete boardCopy[r][c];
+                        std::cout << "Best score updated: " << bestScore << std::endl;
+                        for(int r = 0; r < 8; ++r) {
+                            for(int c = 0; c < 8; ++c) {
+                                delete boardCopy.board[r][c];
+                            }
+                        }
                     }
                 }
+                delete current;
+                std::cout << ". " << col << " " << row << std::endl;
             }
         }
+
 
         if (!bestPawn || bestMove.empty()) {
             std::cout << "AI could not find a valid move!" << std::endl;
