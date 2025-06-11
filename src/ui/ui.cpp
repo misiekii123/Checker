@@ -17,3 +17,15 @@ void Ui::drawPauseMenu() {
     DrawText("Press enter to play return", 20, 80, 20, WHITE);
     DrawText("Press escape to exit to the main menu", 20, 110, 20, WHITE);
 }
+
+void Ui::drawGameOver(Color winningColor) {
+    DrawText("GAME OVER", 20, 20, 40, WHITE);
+    DrawText("Press escape to exit to the main menu", 20, 80, 20, WHITE);
+    if (ColorIsEqual(winningColor, WHITE)) {
+        DrawText("WHITE WINS!", 20, 110, 20, WHITE);
+    } else if (ColorIsEqual(winningColor, BLACK)) {
+        DrawText("BLACK WINS!", 20, 110, 20, BLACK);
+    } else {
+        DrawText("DRAW!", 20, 110, 20, GRAY);
+    }
+}

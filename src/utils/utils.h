@@ -3,7 +3,8 @@
 enum class GameState {
     InGame,
     InMenu,
-    InPause
+    InPause,
+    InGameOver
 };
 
 enum class GameMode {

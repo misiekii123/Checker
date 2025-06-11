@@ -28,11 +28,14 @@ private:
     Pawn* selectedPawn = nullptr;
     Color player_color = WHITE; 
     Color enemy_color = BLACK;
+    Color winning_color;
+    bool is_finished;
     void mouseControl();
     void drawPawnSelection(Pawn* pawn);
     void drawAwailableBeating(std::vector<Vector2> availableBeating);
     void drawAwailableMoves(std::vector<std::vector<Vector2>> availableMoves);    
     bool isInsideBoard(int x, int y);
+    bool isFinished(Color color);
 public:
     void changeGameState(GameState newState);
     void startGame();

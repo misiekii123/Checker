@@ -7,4 +7,5 @@ class Ui {
 public:
     void drawMenu();
     void drawPauseMenu();
+    void drawGameOver(Color winningColor);
 };

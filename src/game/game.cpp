@@ -19,6 +19,10 @@ void Game::startGame() {
     changeGameState(GameState::InGame);
     board.fillPawns();
     playerTurn = Player::Human;
+    is_finished = false;
+    pawn_selected = false;
+    selectedPawn = nullptr;
+    winning_color = PINK;
 }
 
 void Game::mainLoop() {
@@ -27,6 +31,9 @@ void Game::mainLoop() {
             board.drawBoard();
             board.drawPawns();
             mouseControl();
+            if (is_finished) {
+                currentState = GameState::InGameOver;
+            }
             if (pawn_selected && selectedPawn) {
                 drawPawnSelection(selectedPawn);
                 drawAwailableBeating(this->beatings.whereIsBeatingAvailable(selectedPawn, &board));
@@ -60,6 +67,12 @@ void Game::mainLoop() {
                 currentState = GameState::InGame;
             }
             else if (IsKeyPressed(KEY_ESCAPE)) {
+                changeGameState(GameState::InMenu);
+            }
+            break;
+        case GameState::InGameOver:
+            ui.drawGameOver(winning_color);
+            if (IsKeyPressed(KEY_ESCAPE)) {
                 changeGameState(GameState::InMenu);
             }
             break;
@@ -121,6 +134,8 @@ void Game::mouseControl() {
                         int oldY = static_cast<int>(selectedPawn->getPosition().y) / 100;
                         Pawn* midPawn = board.board[(oldY + gridY) / 2][(oldX + gridX) / 2];
                         if (midPawn) {
+                            winning_color = selectedPawn->pawn_color;
+                            is_finished = isFinished(midPawn->pawn_color);
                             midPawn->is_alive = false;
                             board.board[(oldY + gridY) / 2][(oldX + gridX) / 2] = nullptr;
                         }
@@ -174,4 +189,16 @@ void Game::drawAwailableMoves(std::vector<std::vector<Vector2>> availableMoves) 
             DrawRectangleV(rect_pos, rect_size, Color{ 0, 255, 0, 100 });
         }
     }
+}
+
+bool Game::isFinished(Color color) {
+    for (int row = 0; row < 8; ++row) {
+        for (int col = 0; col < 8; ++col) {
+            Pawn* pawn = board.board[row][col];
+            if (pawn && pawn->is_alive && ColorIsEqual(pawn->pawn_color, color)) {
+                return false;
+            }
+        }
+    }
+    return true;
 }
