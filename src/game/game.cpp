@@ -145,31 +145,51 @@ void Game::mouseControl() {
                         Vector2 newPos = move;
                         int oldX = static_cast<int>(selectedPawn->getPosition().x) / 100;
                         int oldY = static_cast<int>(selectedPawn->getPosition().y) / 100;
-                        Pawn* midPawn = board.board[(oldY + gridY) / 2][(oldX + gridX) / 2];
-                        midPawn->is_alive = false;
-                        board.board[(oldY + gridY) / 2][(oldX + gridX) / 2] = nullptr;
+
+                        int newX = moveGridX;
+                        int newY = moveGridY;
+
+                        int dx = (newX - oldX) > 0 ? 1 : -1;
+                        int dy = (newY - oldY) > 0 ? 1 : -1;
+
+                        int x = oldX + dx;
+                        int y = oldY + dy;
+
+                        while (x != newX && y != newY) {
+                            Pawn* midPawn = board.board[y][x];
+                            if (midPawn && midPawn->is_alive && !ColorIsEqual(midPawn->pawn_color, selectedPawn->pawn_color)) {
+                                winning_color = selectedPawn->pawn_color;
+                                is_finished = isFinished(midPawn->pawn_color);
+
+                                midPawn->is_alive = false;
+                                board.board[y][x] = nullptr;
+                                break;
+                            }
+                            x += dx;
+                            y += dy;
+                        }
+
                         board.board[oldY][oldX] = nullptr;
-                        board.board[gridY][gridX] = selectedPawn;
+                        board.board[newY][newX] = selectedPawn;
                         selectedPawn->changePosition(newPos);
-                        if (!selectedPawn->is_queen && (gridY == 0 || gridY == 7)) {
+
+                        if (!selectedPawn->is_queen && (newY == 0 || newY == 7)) {
                             selectedPawn->is_queen = true;
                         }
+
                         selectedPawn = nullptr;
                         pawn_selected = false;
+
                         if (gameMode == GameMode::MultiPlayer) {
-                            if (playerTurn == Player::Player) {
-                                playerTurn = Player::Enemy;
-                            } else {
-                                playerTurn = Player::Player;
-                            }
-                        }
-                        else {
+                            playerTurn = (playerTurn == Player::Player) ? Player::Enemy : Player::Player;
+                        } else {
                             playerTurn = Player::Enemy;
                         }
-                        
+
                         return;
                     }
                 }
+
             }
 
             else if (clickedPawn && clickedPawn->is_alive) {
