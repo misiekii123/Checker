@@ -48,6 +48,9 @@ void Board::drawPawns() {
             if (pawn != nullptr && pawn->is_alive) {
                 Color color = ColorIsEqual(pawn->pawn_color, BLACK) ? BLACK : WHITE;
                 DrawCircleV(pawn->getPosition(), 40, color);
+                if(pawn->is_queen) {
+                    DrawRing(pawn->getPosition(), 40, 45, 0, 360, 1, PINK);
+                }
             }
         }
     }
