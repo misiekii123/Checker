@@ -24,7 +24,7 @@ void Ui::drawGameOver(Color winningColor) {
     if (ColorIsEqual(winningColor, WHITE)) {
         DrawText("WHITE WINS!", 20, 110, 20, WHITE);
     } else if (ColorIsEqual(winningColor, BLACK)) {
-        DrawText("BLACK WINS!", 20, 110, 20, BLACK);
+        DrawText("BLACK WINS!", 20, 110, 20, WHITE);
     } else {
         DrawText("DRAW!", 20, 110, 20, GRAY);
     }

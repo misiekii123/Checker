@@ -41,8 +41,11 @@ void Game::mainLoop() {
             }
             if (playerTurn == Player::Enemy && gameMode == GameMode::SinglePlayer) {
                 ai.move(board);
-                is_finished = isFinished(enemy_color);
                 playerTurn = Player::Player;
+            }
+            if (isFinished(player_color) || isFinished(enemy_color)) {
+                is_finished = true;
+                winning_color = isFinished(player_color) ? enemy_color : player_color;
             }
             if (IsKeyPressed(KEY_ESCAPE)) {
                 changeGameState(GameState::InPause);
@@ -143,12 +146,8 @@ void Game::mouseControl() {
                         int oldX = static_cast<int>(selectedPawn->getPosition().x) / 100;
                         int oldY = static_cast<int>(selectedPawn->getPosition().y) / 100;
                         Pawn* midPawn = board.board[(oldY + gridY) / 2][(oldX + gridX) / 2];
-                        if (midPawn) {
-                            winning_color = selectedPawn->pawn_color;
-                            is_finished = isFinished(midPawn->pawn_color);
-                            midPawn->is_alive = false;
-                            board.board[(oldY + gridY) / 2][(oldX + gridX) / 2] = nullptr;
-                        }
+                        midPawn->is_alive = false;
+                        board.board[(oldY + gridY) / 2][(oldX + gridX) / 2] = nullptr;
                         board.board[oldY][oldX] = nullptr;
                         board.board[gridY][gridX] = selectedPawn;
                         selectedPawn->changePosition(newPos);
