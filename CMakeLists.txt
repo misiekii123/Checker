@@ -4,6 +4,7 @@ project(Checker)
 set(CMAKE_CXX_STANDARD 17)
 
 file(GLOB_RECURSE SOURCES
+    # src/raygui.cpp
     src/board/*.cpp
     src/game/*.cpp
     src/pawn/*.cpp
