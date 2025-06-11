@@ -22,6 +22,24 @@ void Ai::move(Board& board) {
                         pawn->changePosition(newPos);
                         return; 
                     }
+                    else {
+                        std::vector<Vector2> availableBeating = beatings.whereIsBeatingAvailable(pawn, &board);
+                        if (!availableBeating.empty()) {
+                            int randomIndex = rand() % availableBeating.size();
+                            Vector2 newPos = availableBeating[randomIndex];
+                            int oldX = static_cast<int>(pawn->getPosition().x) / 100;
+                            int oldY = static_cast<int>(pawn->getPosition().y) / 100;
+                            Pawn* midPawn = board.board[(oldY + static_cast<int>(newPos.y) / 100) / 2][(oldX + static_cast<int>(newPos.x) / 100) / 2];
+                            if (midPawn) {
+                                midPawn->is_alive = false;
+                                board.board[(oldY + static_cast<int>(newPos.y) / 100) / 2][(oldX + static_cast<int>(newPos.x) / 100) / 2] = nullptr;
+                            }
+                            board.board[oldY][oldX] = nullptr;
+                            board.board[static_cast<int>(newPos.y) / 100][static_cast<int>(newPos.x) / 100] = pawn;
+                            pawn->changePosition(newPos);
+                            return; 
+                        }
+                    }
                 }
             }
         }
