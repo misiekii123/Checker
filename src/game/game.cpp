@@ -41,6 +41,7 @@ void Game::mainLoop() {
             }
             if (playerTurn == Player::AI && gameMode == GameMode::SinglePlayer) {
                 ai.move(board);
+                is_finished = isFinished(enemy_color);
                 playerTurn = Player::Human;
             }
             if (IsKeyPressed(KEY_ESCAPE)) {
