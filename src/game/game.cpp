@@ -35,7 +35,7 @@ void Game::mainLoop() {
             }
             if (playerTurn == Player::AI) {
                 std::cout << "AI's turn" << std::endl;
-                ai.move(&board);
+                ai.move(board);
                 playerTurn = Player::Human;
             }
             if (IsKeyPressed(KEY_ESCAPE)) {
