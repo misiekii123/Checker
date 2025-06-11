@@ -17,6 +17,7 @@ enum class Player {
 
 class Game {
 private:
+    GameMode gameMode;
     GameState currentState;
     Beatings beatings;
     Ui ui;

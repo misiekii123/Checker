@@ -32,7 +32,7 @@ void Game::mainLoop() {
                 drawAwailableBeating(this->beatings.whereIsBeatingAvailable(selectedPawn, &board));
                 drawAwailableMoves(this->beatings.legalMoves(selectedPawn, &board));
             }
-            if (playerTurn == Player::AI) {
+            if (playerTurn == Player::AI && gameMode == GameMode::SinglePlayer) {
                 ai.move(board);
                 playerTurn = Player::Human;
             }
@@ -42,8 +42,16 @@ void Game::mainLoop() {
             break;
         case GameState::InMenu:
             ui.drawMenu();
-            if (IsKeyPressed(KEY_ENTER)) {
+            if (IsKeyPressed(KEY_ONE)) {
                 startGame();
+                gameMode = GameMode::SinglePlayer;
+            }
+            else if (IsKeyPressed(KEY_TWO)) {
+                startGame();
+                gameMode = GameMode::MultiPlayer;
+            }
+            else if (IsKeyPressed(KEY_ESCAPE)) {
+                CloseWindow();
             }
             break;
         case GameState::InPause:
@@ -127,9 +135,15 @@ void Game::mouseControl() {
                 }
             }
 
-            else if (clickedPawn && clickedPawn->is_alive && ColorIsEqual(clickedPawn->pawn_color, player_color)) {
-                selectedPawn = clickedPawn;
-                pawn_selected = true;
+            else if (clickedPawn && clickedPawn->is_alive) {
+                if (gameMode == GameMode::SinglePlayer && !ColorIsEqual(clickedPawn->pawn_color, player_color)) {
+                    selectedPawn = nullptr;
+                    pawn_selected = false;
+                }
+                else {
+                    selectedPawn = clickedPawn;
+                    pawn_selected = true;
+                }
             }
 
             else {

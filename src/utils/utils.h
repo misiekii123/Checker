@@ -5,3 +5,8 @@ enum class GameState {
     InMenu,
     InPause
 };
+
+enum class GameMode {
+    SinglePlayer,
+    MultiPlayer
+};
