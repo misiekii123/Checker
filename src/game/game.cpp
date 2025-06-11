@@ -1,6 +1,5 @@
 #include "game.h"
 #include <math.h>
-#include <iostream>
 #include "beatings/beatings.h"
 
 Game::Game() {
@@ -34,7 +33,6 @@ void Game::mainLoop() {
                 drawAwailableMoves(this->beatings.legalMoves(selectedPawn, &board));
             }
             if (playerTurn == Player::AI) {
-                std::cout << "AI's turn" << std::endl;
                 ai.move(board);
                 playerTurn = Player::Human;
             }
