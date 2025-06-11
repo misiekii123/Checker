@@ -77,7 +77,6 @@ void Game::mouseControl() {
             if (pawn_selected && clickedPawn == selectedPawn) {
                 selectedPawn = nullptr;
                 pawn_selected = false;
-                playerTurn = Player::AI;
             }
 
             else if (pawn_selected && clickedPawn == nullptr) {
