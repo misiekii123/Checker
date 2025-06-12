@@ -57,6 +57,9 @@ void Ai::move(Board& board) {
             board.board[oldY][oldX] = nullptr;
             board.board[newY][newX] = pawn;
             pawn->changePosition(newPos);
+            if (!pawn->is_queen && newY == 7) {
+                pawn->is_queen = true;
+            }
             return;
         }
         else if (!normalMovesList.empty()) {
@@ -70,6 +73,10 @@ void Ai::move(Board& board) {
             board.board[oldY][oldX] = nullptr;
             board.board[newY][newX] = pawn;
             pawn->changePosition(newPos);
+
+            if (!pawn->is_queen && newY == 7) {
+                pawn->is_queen = true;
+            }
             return;
         }
     }
